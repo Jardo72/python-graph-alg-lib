@@ -56,6 +56,24 @@ class AbstractGraphTestFixture(ABC):
         """
         raise NotImplementedError
 
+    def test_graph_with_all_edges_having_the_same_weight_is_unweighted(self): # pylint: disable=R0201
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B', 3)
+        graph.add_edge('A', 'C', 3)
+        graph.add_edge('B', 'C', 3)
+        graph.add_edge('C', 'D', 3)
+
+        assert not graph.is_weighted
+
+    def test_graph_with_edges_having_distinct_weights_is_weighted(self): # pylint: disable=R0201
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B', 2)
+        graph.add_edge('A', 'C', 3)
+        graph.add_edge('B', 'C', 2)
+        graph.add_edge('C', 'D', 4)
+
+        assert graph.is_weighted
+
     def test_empty_graph_has_no_vertices(self): # pylint: disable=R0201
         graph = self._create_graph(GraphType.DIRECTED)
         assert 0 == graph.vertex_count, 'Vertex count'

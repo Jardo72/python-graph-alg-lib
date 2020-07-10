@@ -149,6 +149,23 @@ class AbstractGraph(ABC):
 
     @property
     @abstractmethod
+    def is_weighted(self) -> bool:
+        """Verifies whether this graph is weighted or unweighted.
+
+        Raises:
+            NotImplementedError: This method always raises this exception as
+                                 this is an abstract method derived classes
+                                 have to implement.
+
+        Returns:
+            bool: Derived classes implementing this method are supposed to
+                  return True if this graph is weighted, and False if this
+                  graph is unweighted.
+        """
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
     def vertex_count(self) -> int:
         """Returns the number of vertices involved in the graph represented
         byt this object.
@@ -289,6 +306,17 @@ class AdjacencyMatrixGraph(AbstractGraph):
         super().__init__(graph_type)
         self._matrix = _create_matrix(vertex_count)
         self._registry = _VertexRegistry()
+        self._weights = set()
+
+    @property
+    def is_weighted(self) -> bool:
+        """Verifies whether this graph is weighted or unweighted.
+
+        Returns:
+            bool: True if this graph is weighted; False if this graph is
+                  unweighted.
+        """
+        return len(self._weights) > 1
 
     @property
     def vertex_count(self) -> int:
@@ -322,6 +350,7 @@ class AdjacencyMatrixGraph(AbstractGraph):
         self._matrix[vertex_one_index][vertex_two_index] = weight
         if self.graph_type is GraphType.UNDIRECTED:
             self._matrix[vertex_two_index][vertex_one_index] = weight
+        self._weights.add(weight)
 
     def get_sorted_vertices(self) -> Tuple[str, ...]:
         """Creates and returns a new tuple containing sorted names of all
@@ -485,6 +514,17 @@ class AdjacencySetGraph(AbstractGraph):
     def __init__(self, graph_type: GraphType):
         super().__init__(graph_type)
         self._adjacency_sets: Dict[str, _AdjacencySet] = {}
+        self._weights = set()
+
+    @property
+    def is_weighted(self) -> bool:
+        """Verifies whether this graph is weighted or unweighted.
+
+        Returns:
+            bool: True if this graph is weighted; False if this graph is
+                  unweighted.
+        """
+        return len(self._weights) > 1
 
     @property
     def vertex_count(self) -> int:
@@ -516,6 +556,7 @@ class AdjacencySetGraph(AbstractGraph):
         self._add_edge(vertex_one, vertex_two, weight)
         if self.graph_type is GraphType.UNDIRECTED:
             self._add_edge(vertex_two, vertex_one, weight) # pylint: disable=W1114
+        self._weights.add(weight)
 
     def _add_edge(self, vertex_one: str, vertex_two: str, weight: int):
         if not vertex_one in self._adjacency_sets:
@@ -598,8 +639,10 @@ def dump_graph(graph: AbstractGraph):
     Args:
         graph (AbstractGraph): The graph to be dumped.
     """
+    weighted = 'YES' if graph.is_weighted else 'NO'
     print()
     print(f'Graph type: {graph.graph_type}')
+    print(f'Weighted: {weighted}')
     print(f'Vertices (totally {graph.vertex_count}):')
     for current_vertex in graph.get_sorted_vertices():
         print(f' - {current_vertex}')
