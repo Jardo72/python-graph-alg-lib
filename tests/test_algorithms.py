@@ -28,8 +28,11 @@ from graphlib.graph import AdjacencySetGraph, GraphType
 
 
 class TestTopologicalSort:
+    """Collection of test methods exercising the :method:
+    graphlib.graph.sort_toplogically.
+    """
 
-    def test_topological_sort_returns_vertices_in_proper_order(self):
+    def test_topological_sort_returns_vertices_in_proper_order(self): # pylint: disable=R0201
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'C')
         graph.add_edge('B', 'C')
@@ -46,28 +49,28 @@ class TestTopologicalSort:
         expected_order = ['A', 'B', 'D', 'F', 'G', 'C', 'H', 'E', 'I', 'J']
         assert expected_order == actual_order
 
-    def test_attempt_to_apply_topological_sort_to_undirected_graph_leads_to_exception(self):
+    def test_attempt_to_apply_topological_sort_to_undirected_graph_leads_to_exception(self): # pylint: disable=R0201
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'C')
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
 
-        with raises(ValueError, match = r'.+ applied to directed graphs\.'):
+        with raises(ValueError, match=r'.+ applied to directed graphs\.'):
             sort_toplogically(graph)
 
-    def test_attepmt_to_apply_topological_sort_to_cyclic_graph_leads_to_exception(self):
+    def test_attepmt_to_apply_topological_sort_to_cyclic_graph_leads_to_exception(self): # pylint: disable=R0201
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'A')
 
-        with raises(ValueError, match = r'.+ applied to acyclic graphs\.'):
+        with raises(ValueError, match=r'.+ applied to acyclic graphs\.'):
             sort_toplogically(graph)
 
 
 class TestShortestPath:
 
-    def test_shortest_path_search_result_provides_proper_derived_properties(self):
+    def test_shortest_path_search_result_provides_proper_derived_properties(self): # pylint: disable=R0201
         path = [
             Edge(start = 'A', destination = 'B', weight = 2),
             Edge(start = 'B', destination = 'C', weight = 3),
@@ -83,7 +86,7 @@ class TestShortestPath:
 
 
     @mark.skip('Functionality not implemented yet')
-    def test_shortest_path_search_finds_proper_shortest_path(self):
+    def test_shortest_path_search_finds_proper_shortest_path(self): # pylint: disable=R0201
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 4)

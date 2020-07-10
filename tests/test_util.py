@@ -26,13 +26,16 @@ from graphlib.util import PriorityQueue
 
 
 class TestPriorityQueue:
+    """Collection of test methods exercising the class :class:
+    graphlib.util.PriorityQueue.
+    """
 
-    def test_virgin_priority_queue_is_empty(self):
+    def test_virgin_priority_queue_is_empty(self): # pylint: disable=R0201
         queue = PriorityQueue()
         assert queue.empty
 
 
-    def test_priority_queue_with_elements_is_not_empty(self):
+    def test_priority_queue_with_elements_is_not_empty(self): # pylint: disable=R0201
         queue = PriorityQueue()
 
         queue.enqueue(4, 'D')
@@ -51,7 +54,7 @@ class TestPriorityQueue:
         assert not queue.empty()
 
 
-    def test_priority_queue_after_removal_of_last_element_is_empty(self):
+    def test_priority_queue_after_removal_of_last_element_is_empty(self): # pylint: disable=R0201
         queue = PriorityQueue()
 
         queue.enqueue(5, 'A')
@@ -73,7 +76,7 @@ class TestPriorityQueue:
         assert queue.empty()
 
 
-    def test_dequeing_from_priority_queue_reflects_priority(self):
+    def test_dequeing_from_priority_queue_reflects_priority(self): # pylint: disable=R0201
         queue = PriorityQueue()
         queue.enqueue(4, 'D')
         queue.enqueue(5, 'A')
@@ -90,7 +93,7 @@ class TestPriorityQueue:
         assert 'C' == queue.dequeue()
 
 
-    def test_dequeing_from_priority_queue_reflects_modification_of_priority(self):
+    def test_dequeing_from_priority_queue_reflects_modification_of_priority(self): # pylint: disable=R0201
         queue = PriorityQueue()
         queue.enqueue(4, 'D')
         queue.enqueue(5, 'A')
@@ -105,7 +108,7 @@ class TestPriorityQueue:
         assert 'A' == queue.dequeue()
 
 
-    def test_items_with_modified_priority_are_counted_just_once(self):
+    def test_items_with_modified_priority_are_counted_just_once(self): # pylint: disable=R0201
         queue = PriorityQueue()
         queue.enqueue(5, 'A')
         queue.enqueue(4, 'B')
@@ -117,22 +120,22 @@ class TestPriorityQueue:
 
         assert queue.empty()
 
-    def test_attempt_to_deque_from_virgin_queue_leads_to_error(self):
+    def test_attempt_to_deque_from_virgin_queue_leads_to_error(self): # pylint: disable=R0201
         queue = PriorityQueue()
-        with raises(IndexError, match = r'Cannot dequeue from empty queue\.'):
+        with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
 
-    def test_attempt_to_deque_from_empty_queue_leads_to_error(self):
+    def test_attempt_to_deque_from_empty_queue_leads_to_error(self): # pylint: disable=R0201
         queue = PriorityQueue()
         queue.enqueue(5, 'A')
         queue.enqueue(4, 'B')
         queue.dequeue()
         queue.dequeue()
 
-        with raises(IndexError, match = r'Cannot dequeue from empty queue\.'):
+        with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
 
-    def test_attempt_to_deque_from_empty_queue_after_reprioritization_leads_to_error(self):
+    def test_attempt_to_deque_from_empty_queue_after_reprioritization_leads_to_error(self): # pylint: disable=R0201
         queue = PriorityQueue()
         queue.enqueue(7, 'A')
         queue.enqueue(4, 'B')
@@ -140,5 +143,5 @@ class TestPriorityQueue:
         queue.enqueue(3, 'A')
         queue.dequeue()
 
-        with raises(IndexError, match = r'Cannot dequeue from empty queue\.'):
+        with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()

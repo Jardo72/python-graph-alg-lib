@@ -73,7 +73,7 @@ class _VertexRegistry:
             self._name_to_id_mapping[name] = new_id
             self._id_to_name_mapping[new_id] = name
         if name not in self._name_to_id_mapping:
-            message = f'Vertex with the name {name} not present in the registry.'
+            message = f'Vertex with the name {name} not found.'
             raise ValueError(message)
         return self._name_to_id_mapping[name]
 
@@ -369,7 +369,11 @@ class AdjacencyMatrixGraph(AbstractGraph):
         """
         vertex_one_index = self._registry.get_id(vertex_one)
         vertex_two_index = self._registry.get_id(vertex_two)
-        return self._matrix[vertex_one_index][vertex_two_index]
+        result = self._matrix[vertex_one_index][vertex_two_index]
+        if result == 0:
+            message = f'There is no edge from {vertex_one} to {vertex_two}.'
+            raise ValueError(message)
+        return result
 
     def get_in_degree(self, vertex: str) -> int:
         """Returns the in-degree of the vertex with the given name.
@@ -453,7 +457,7 @@ class _AdjacencySet:
             int: [description]
         """
         if destination not in self._adjacent_vertices:
-            message = f'Edge from {self._name} to {destination} not present in the graph.'
+            message = f'There is no edge from {self._name} to {destination}.'
             raise ValueError(message)
         return self._adjacent_vertices[destination]
 
@@ -562,7 +566,7 @@ class AdjacencySetGraph(AbstractGraph):
             int: The weight of the edge connecting the given pair of vertices.
         """
         if not vertex_one in self._adjacency_sets:
-            message = f'Vertex with the name {vertex_one} not present in the registry.'
+            message = f'Vertex with the name {vertex_one} not found.'
             raise ValueError(message)
         return self._adjacency_sets[vertex_one].get_edge_weight(vertex_two)
 
