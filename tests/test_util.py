@@ -22,125 +22,125 @@
 
 from pytest import raises
 
-from graphlib.util import PriorityQueue
+from graphlib.util import PriorityQueue, QueueableItem
 
 
-class TestPriorityQueue:
+class TestPriorityQueue: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the class :class:
     graphlib.util.PriorityQueue.
     """
 
-    def test_virgin_priority_queue_is_empty(self): # pylint: disable=R0201
+    def test_virgin_priority_queue_is_empty(self):
         queue = PriorityQueue()
         assert queue.empty
 
 
-    def test_priority_queue_with_elements_is_not_empty(self): # pylint: disable=R0201
+    def test_priority_queue_with_elements_is_not_empty(self):
         queue = PriorityQueue()
 
-        queue.enqueue(4, 'D')
+        queue.enqueue(QueueableItem('D', 4))
         assert not queue.empty()
 
-        queue.enqueue(5, 'A')
+        queue.enqueue(QueueableItem('A', 5))
         assert not queue.empty()
 
-        queue.enqueue(3, 'B')
-        assert not queue.empty()
-
-        queue.dequeue()
+        queue.enqueue(QueueableItem('B', 3))
         assert not queue.empty()
 
         queue.dequeue()
         assert not queue.empty()
 
+        queue.dequeue()
+        assert not queue.empty()
 
-    def test_priority_queue_after_removal_of_last_element_is_empty(self): # pylint: disable=R0201
+
+    def test_priority_queue_after_removal_of_last_element_is_empty(self):
         queue = PriorityQueue()
 
-        queue.enqueue(5, 'A')
-        queue.enqueue(3, 'B')
+        queue.enqueue(QueueableItem('A', 5))
+        queue.enqueue(QueueableItem('B', 3))
         queue.dequeue()
-        queue.enqueue(4, 'C')
+        queue.enqueue(QueueableItem('C', 4))
         queue.dequeue()
         queue.dequeue()
         assert queue.empty()
 
-        queue.enqueue(2, 'D')
+        queue.enqueue(QueueableItem('D', 2))
         queue.dequeue()
         assert queue.empty()
 
-        queue.enqueue(3, 'E')
-        queue.enqueue(1, 'F')
+        queue.enqueue(QueueableItem('E', 3))
+        queue.enqueue(QueueableItem('F', 1))
         queue.dequeue()
         queue.dequeue()
         assert queue.empty()
 
 
-    def test_dequeing_from_priority_queue_reflects_priority(self): # pylint: disable=R0201
+    def test_dequeing_from_priority_queue_reflects_priority(self):
         queue = PriorityQueue()
-        queue.enqueue(4, 'D')
-        queue.enqueue(5, 'A')
-        queue.enqueue(3, 'B')
-        queue.enqueue(7, 'C')
+        queue.enqueue(QueueableItem('D', 4))
+        queue.enqueue(QueueableItem('A', 5))
+        queue.enqueue(QueueableItem('B', 3))
+        queue.enqueue(QueueableItem('C', 7))
 
-        assert 'B' == queue.dequeue()
-        assert 'D' == queue.dequeue()
+        assert queue.dequeue() == QueueableItem('B', 3)
+        assert queue.dequeue() == QueueableItem('D', 4)
 
-        queue.enqueue(1, 'E')
+        queue.enqueue(QueueableItem('E', 1))
 
-        assert 'E' == queue.dequeue()
-        assert 'A' == queue.dequeue()
-        assert 'C' == queue.dequeue()
+        assert queue.dequeue() == QueueableItem('E', 1)
+        assert queue.dequeue() == QueueableItem('A', 5)
+        assert queue.dequeue() == QueueableItem('C', 7)
 
 
-    def test_dequeing_from_priority_queue_reflects_modification_of_priority(self): # pylint: disable=R0201
+    def test_dequeing_from_priority_queue_reflects_modification_of_priority(self):
         queue = PriorityQueue()
-        queue.enqueue(4, 'D')
-        queue.enqueue(5, 'A')
-        queue.enqueue(3, 'B')
-        queue.enqueue(7, 'C')
-        queue.enqueue(1, 'D')
-        queue.enqueue(2, 'C')
+        queue.enqueue(QueueableItem('D', 4))
+        queue.enqueue(QueueableItem('A', 5))
+        queue.enqueue(QueueableItem('B', 3))
+        queue.enqueue(QueueableItem('C', 7))
+        queue.enqueue(QueueableItem('D', 1))
+        queue.enqueue(QueueableItem('C', 2))
 
-        assert 'D' == queue.dequeue()
-        assert 'C' == queue.dequeue()
-        assert 'B' == queue.dequeue()
-        assert 'A' == queue.dequeue()
+        assert queue.dequeue() == QueueableItem('D', 1)
+        assert queue.dequeue() == QueueableItem('C', 2)
+        assert queue.dequeue() == QueueableItem('B', 3)
+        assert queue.dequeue() == QueueableItem('A', 5)
 
 
-    def test_items_with_modified_priority_are_counted_just_once(self): # pylint: disable=R0201
+    def test_items_with_modified_priority_are_counted_just_once(self):
         queue = PriorityQueue()
-        queue.enqueue(5, 'A')
-        queue.enqueue(4, 'B')
-        queue.enqueue(3, 'A')
-        queue.enqueue(6, 'B')
+        queue.enqueue(QueueableItem('A', 5))
+        queue.enqueue(QueueableItem('B', 4))
+        queue.enqueue(QueueableItem('A', 3))
+        queue.enqueue(QueueableItem('B', 6))
 
         queue.dequeue()
         queue.dequeue()
 
         assert queue.empty()
 
-    def test_attempt_to_deque_from_virgin_queue_leads_to_error(self): # pylint: disable=R0201
+    def test_attempt_to_deque_from_virgin_queue_leads_to_error(self):
         queue = PriorityQueue()
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
 
-    def test_attempt_to_deque_from_empty_queue_leads_to_error(self): # pylint: disable=R0201
+    def test_attempt_to_deque_from_empty_queue_leads_to_error(self):
         queue = PriorityQueue()
-        queue.enqueue(5, 'A')
-        queue.enqueue(4, 'B')
+        queue.enqueue(QueueableItem('A', 5))
+        queue.enqueue(QueueableItem('B', 4))
         queue.dequeue()
         queue.dequeue()
 
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
 
-    def test_attempt_to_deque_from_empty_queue_after_reprioritization_leads_to_error(self): # pylint: disable=R0201
+    def test_attempt_to_deque_from_empty_queue_after_reprioritization_leads_to_error(self):
         queue = PriorityQueue()
-        queue.enqueue(7, 'A')
-        queue.enqueue(4, 'B')
+        queue.enqueue(QueueableItem('A', 7))
+        queue.enqueue(QueueableItem('B', 4))
         queue.dequeue()
-        queue.enqueue(3, 'A')
+        queue.enqueue(QueueableItem('A', 3))
         queue.dequeue()
 
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):

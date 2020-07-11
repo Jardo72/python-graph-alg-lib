@@ -25,13 +25,30 @@ from heapq import heappop, heappush
 from typing import Any, Dict
 
 
+@dataclass(frozen=True)
+class QueueableItem:
+    """Immutable structure carrying a single item that can be enqueued to an
+    instance of the :class: PriorityQueue class.
+
+    This structure is part of the public API of the :class: PriorityQueue,
+    and it is comprised of the following fields:
+    * Unique key of the value carried by this queueable item.
+    * Priority of the value carried by this queueable item.
+    * Optional data, which is to be used if the item has to carry more than
+      just the unique key.
+    """
+    key: str
+    priority: int
+    value: Any = None
+
+
 @dataclass(order=True)
-class _PrioritizedItem:
+class _QueueEntry:
     """Immutable structure carrying a single element currently being present
     in the priority queue.
 
     This class is just an internal helper structure, it it not part of the
-    public API of the PriorityQueue class.
+    public API of the :class: PriorityQueue class.
     """
     priority: int
     item: Any = field(compare=False)
@@ -49,7 +66,7 @@ class PriorityQueue:
         self._sequence = 0
         self._heap = []
         self._size = 0
-        self._item_map: Dict[Any, _PrioritizedItem] = {}
+        self._item_map: Dict[Any, _QueueEntry] = {}
 
     def empty(self) -> bool:
         """Verifies whether this queue is empty.
@@ -60,42 +77,40 @@ class PriorityQueue:
         """
         return self._size == 0
 
-    def enqueue(self, priority: int, item: Any):
+    def enqueue(self, item: QueueableItem):
         """Adds the given item to this queue, using the given priority.
 
-        If the given item is already present in this queue, and its original
-        priority is distinct from the currently specified priority, the new
-        priority is applied. In other words, this method can also be used to
-        modify the priority of an item already present in the queue. The queue
-        instantly takes the modified priority into account.
+        If an item with the same unique key is already present in this queue,
+        and its original priority is distinct from the currently specified
+        priority, the new priority is applied. In other words, this method can
+        also be used to modify the priority of an item already present in the
+        queue. The queue instantly takes the modified priority into account.
 
         Args:
-            priority (int): The priority of the item to be added to this
-                            queue.
-            item (Any): The item to be added to this queue.
+            item (QueueableItem): The item to be added to this queue.
         """
-        queue_entry = _PrioritizedItem(priority, item)
+        queue_entry = _QueueEntry(item.priority, item)
         heappush(self._heap, queue_entry)
-        if item in self._item_map:
-            self._item_map[item].irrelevant = True
+        if item.key in self._item_map:
+            self._item_map[item.key].irrelevant = True
         else:
             self._size += 1
-        self._item_map[item] = queue_entry
+        self._item_map[item.key] = queue_entry
 
-    def dequeue(self) -> Any:
+    def dequeue(self) -> QueueableItem:
         """Dequeues the next item from this queue.
 
         Raises:
-            IndexError: [description]
+            IndexError: If this queue is empty.
 
         Returns:
-            Any: The dequeued item.
+            QueueableItem: The dequeued item.
         """
         while len(self._heap) > 0:
             queue_entry = heappop(self._heap)
             if queue_entry.irrelevant:
                 continue
-            self._item_map.pop(queue_entry.item)
+            self._item_map.pop(queue_entry.item.key)
             self._size -= 1
             return queue_entry.item
         message = 'Cannot dequeue from empty queue.'
