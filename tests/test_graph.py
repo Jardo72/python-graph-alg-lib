@@ -27,7 +27,7 @@ from pytest import mark, raises
 from graphlib.graph import AbstractGraph, AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
 
 
-class AbstractGraphTestFixture(ABC):
+class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
     """Abstract test-fixture class that implements test methods common to various
     graph implementations like adjacency matrix or adjacency set.
 
@@ -35,7 +35,8 @@ class AbstractGraphTestFixture(ABC):
     graph implementations. In concrete terms, a separate subclass per graph
     implementation is the most likely design. The test methods provided by this
     abstract base class use the :method: AbstractGraphTestFixture._create_graph
-    to instantiate the proper graph implementation. Derived classes are 
+    to instantiate the proper graph implementation. Derived classes are supposed
+    to implement the above mentioned abstract method.
     """
 
     @abstractmethod
@@ -56,7 +57,7 @@ class AbstractGraphTestFixture(ABC):
         """
         raise NotImplementedError
 
-    def test_graph_with_all_edges_having_the_same_weight_is_unweighted(self): # pylint: disable=R0201
+    def test_graph_with_all_edges_having_the_same_weight_is_unweighted(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 3)
         graph.add_edge('A', 'C', 3)
@@ -65,7 +66,7 @@ class AbstractGraphTestFixture(ABC):
 
         assert not graph.is_weighted
 
-    def test_graph_with_edges_having_distinct_weights_is_weighted(self): # pylint: disable=R0201
+    def test_graph_with_edges_having_distinct_weights_is_weighted(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 3)
@@ -74,12 +75,12 @@ class AbstractGraphTestFixture(ABC):
 
         assert graph.is_weighted
 
-    def test_empty_graph_has_no_vertices(self): # pylint: disable=R0201
+    def test_empty_graph_has_no_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
         assert 0 == graph.vertex_count, 'Vertex count'
         assert () == graph.get_sorted_vertices(), 'Sorted vertices'
 
-    def test_non_empty_graph_returns_proper_number_of_vertices(self): # pylint: disable=R0201
+    def test_non_empty_graph_returns_proper_number_of_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
 
         graph.add_edge('A', 'B')
@@ -103,7 +104,7 @@ class AbstractGraphTestFixture(ABC):
         graph.add_edge('F', 'E')
         assert 6 == graph.vertex_count, 'After F -> E'
 
-    def test_non_empty_graph_returns_proper_list_of_vertices(self): # pylint: disable=R0201
+    def test_non_empty_graph_returns_proper_list_of_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
 
         graph.add_edge('A', 'B')
@@ -127,7 +128,7 @@ class AbstractGraphTestFixture(ABC):
         graph.add_edge('F', 'E')
         assert ('A', 'B', 'C', 'D', 'E', 'F') == graph.get_sorted_vertices(), 'After F -> E'
 
-    def test_proper_edge_weight_is_returned(self): # pylint: disable=R0201
+    def test_proper_edge_weight_is_returned(self):
         # TODO:
         # - for undirected graph, we should test both directions
         # - for directed graph, the opposite direction should lead to error
@@ -149,7 +150,7 @@ class AbstractGraphTestFixture(ABC):
         assert 3 == graph.get_edge_weight('D', 'F'), 'D -> F'
         assert 5 == graph.get_edge_weight('F', 'E'), 'F -> E'
 
-    def test_proper_adjacent_vertices_are_returned_for_directed_graph(self): # pylint: disable=R0201
+    def test_proper_adjacent_vertices_are_returned_for_directed_graph(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -166,7 +167,7 @@ class AbstractGraphTestFixture(ABC):
         assert () == graph.get_adjacent_vertices('E'), 'E'
         assert ('E', ) == graph.get_adjacent_vertices('F'), 'F'
 
-    def test_proper_adjacent_vertices_are_returned_for_undirected_graph(self): # pylint: disable=R0201
+    def test_proper_adjacent_vertices_are_returned_for_undirected_graph(self):
         graph = self._create_graph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -183,7 +184,7 @@ class AbstractGraphTestFixture(ABC):
         assert ('B', 'F') == graph.get_adjacent_vertices('E'), 'E'
         assert ('D', 'E') == graph.get_adjacent_vertices('F'), 'F'
 
-    def test_attempt_to_get_edge_weight_for_non_existent_start_vertex_leads_to_error(self): # pylint: disable=R0201
+    def test_attempt_to_get_edge_weight_for_non_existent_start_vertex_leads_to_error(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -194,7 +195,7 @@ class AbstractGraphTestFixture(ABC):
             graph.get_edge_weight('X', 'B')
 
     @mark.skip('Failing - correction is needed in the tested classes')
-    def test_attempt_to_get_edge_weight_for_non_existent_destination_vertex_leads_to_error(self): # pylint: disable=R0201
+    def test_attempt_to_get_edge_weight_for_non_existent_destination_vertex_leads_to_error(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -204,7 +205,7 @@ class AbstractGraphTestFixture(ABC):
         with raises(ValueError, match=r'Vertex with the name X not found\.'):
             graph.get_edge_weight('B', 'X')
 
-    def test_attempt_to_get_edge_weight_for_non_existent_edge_leads_to_error(self): # pylint: disable=R0201
+    def test_attempt_to_get_edge_weight_for_non_existent_edge_leads_to_error(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -215,7 +216,7 @@ class AbstractGraphTestFixture(ABC):
             graph.get_edge_weight('B', 'A')
 
 
-class TestAdjacencySetGraph(AbstractGraphTestFixture):
+class TestAdjacencySetGraph(AbstractGraphTestFixture): # pylint: disable=R0201,C0116
     """Concrete test-fixture for the adjacency set implementation of graph
     (i.e. for the class :class: graph.AdjacencySetGraph).
     """
@@ -227,7 +228,7 @@ class TestAdjacencySetGraph(AbstractGraphTestFixture):
         return AdjacencySetGraph(graph_type)
 
 
-class TestAdjacencyMatrixGraph(AbstractGraphTestFixture):
+class TestAdjacencyMatrixGraph(AbstractGraphTestFixture): # pylint: disable=R0201,C0116
     """Concrete test-fixture for the adjacency matric implementation of graph
     (i.e. for the :class: graphlib.graph.AdjacencyMatrixGraph).
     """

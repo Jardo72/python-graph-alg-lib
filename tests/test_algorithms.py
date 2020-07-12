@@ -23,54 +23,102 @@
 from pytest import mark, raises
 
 from graphlib.algorithms import Edge, ShortestPathSearchRequest, ShortestPathSearchResult
-from graphlib.algorithms import find_shortest_path, sort_toplogically
+from graphlib.algorithms import find_shortest_path, sort_topologically
 from graphlib.graph import AdjacencySetGraph, GraphType
 
 
-class TestTopologicalSort:
+class TestTopologicalSort: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :method:
     graphlib.graph.sort_toplogically.
     """
 
-    def test_topological_sort_returns_vertices_in_proper_order(self): # pylint: disable=R0201
+    def test_topological_sort_returns_vertices_in_proper_order_case_01(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'C')
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'E')
         graph.add_edge('D', 'E')
-        graph.add_edge('E', 'I')
-        graph.add_edge('F', 'H')
-        graph.add_edge('G', 'H')
-        graph.add_edge('H', 'I')
-        graph.add_edge('I', 'J')
+        graph.add_edge('E', 'F')
 
-        sort_result = sort_toplogically(graph)
+        sort_result = sort_topologically(graph)
         actual_order = list(sort_result)
-        expected_order = ['A', 'B', 'D', 'F', 'G', 'C', 'H', 'E', 'I', 'J']
-        assert expected_order == actual_order
+        assert actual_order in [
+            ['A', 'B', 'C', 'D', 'E', 'F'],
+            ['B', 'A', 'C', 'D', 'E', 'F'],
+            ['A', 'B', 'D', 'C', 'E', 'F'],
+            ['B', 'A', 'D', 'C', 'E', 'F'],
+            ['A', 'D', 'B', 'C', 'E', 'F'],
+            ['B', 'D', 'A', 'C', 'E', 'F'],
+            ['D', 'A', 'B', 'C', 'E', 'F'],
+            ['D', 'B', 'A', 'C', 'E', 'F'],
+        ]
 
-    def test_attempt_to_apply_topological_sort_to_undirected_graph_leads_to_exception(self): # pylint: disable=R0201
+    def test_topological_sort_returns_vertices_in_proper_order_case_02(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('B', 'C')
+        graph.add_edge('B', 'D')
+        graph.add_edge('D', 'E')
+        graph.add_edge('C', 'F')
+        graph.add_edge('E', 'F')
+        graph.add_edge('F', 'G')
+
+        sort_result = sort_topologically(graph)
+        sort_result = list(sort_result)
+        assert sort_result in [
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+            ['A', 'B', 'E', 'C', 'D', 'F', 'G'],
+            ['A', 'B', 'C', 'E', 'D', 'F', 'G'],
+        ]
+
+    def test_topological_sort_returns_vertices_in_proper_order_case_03(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('B', 'C')
+        graph.add_edge('C', 'D')
+        graph.add_edge('C', 'E')
+        graph.add_edge('C', 'F')
+        graph.add_edge('D', 'G')
+        graph.add_edge('E', 'G')
+        graph.add_edge('G', 'H')
+        graph.add_edge('F', 'H')
+        graph.add_edge('H', 'I')
+
+        sort_result = sort_topologically(graph)
+        sort_result = list(sort_result)
+        assert sort_result in [
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
+            ['A', 'B', 'C', 'D', 'F', 'E', 'G', 'H', 'I'],
+            ['A', 'B', 'C', 'E', 'D', 'F', 'G', 'H', 'I'],
+            ['A', 'B', 'C', 'E', 'F', 'D', 'G', 'H', 'I'],
+            ['A', 'B', 'C', 'F', 'E', 'D', 'G', 'H', 'I'],
+            ['A', 'B', 'C', 'F', 'D', 'E', 'G', 'H', 'I'],
+            ['A', 'B', 'C', 'D', 'E', 'G', 'F', 'H', 'I'],
+            ['A', 'B', 'C', 'E', 'D', 'G', 'F', 'H', 'I'],
+        ]
+
+    def test_attempt_to_apply_topological_sort_to_undirected_graph_leads_to_exception(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'C')
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
 
         with raises(ValueError, match=r'.+ applied to directed graphs\.'):
-            sort_toplogically(graph)
+            sort_topologically(graph)
 
-    def test_attepmt_to_apply_topological_sort_to_cyclic_graph_leads_to_exception(self): # pylint: disable=R0201
+    def test_attepmt_to_apply_topological_sort_to_cyclic_graph_leads_to_exception(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'A')
 
         with raises(ValueError, match=r'.+ applied to acyclic graphs\.'):
-            sort_toplogically(graph)
+            sort_topologically(graph)
 
 
-class TestShortestPath:
+class TestShortestPath: # pylint: disable=R0201,C0116
 
-    def test_shortest_path_search_result_provides_proper_derived_properties(self): # pylint: disable=R0201
+    def test_shortest_path_search_result_provides_proper_derived_properties(self):
         path = [
             Edge(start = 'A', destination = 'B', weight = 2),
             Edge(start = 'B', destination = 'C', weight = 3),
@@ -86,7 +134,7 @@ class TestShortestPath:
 
 
     @mark.skip('Functionality not implemented yet')
-    def test_shortest_path_search_finds_proper_shortest_path(self): # pylint: disable=R0201
+    def test_shortest_path_search_finds_proper_shortest_path(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 4)
@@ -105,10 +153,10 @@ class TestShortestPath:
         actual_search_result = find_shortest_path(search_request)
 
         path = [
-            Edge(start = 'A', destination = 'B', weight = 2),
-            Edge(start = 'B', destination = 'C', weight = 1),
-            Edge(start = 'C', destination = 'F', weight = 3),
-            Edge(start = 'F', destination = 'G', weight = 2),
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='C', weight=1),
+            Edge(start='C', destination='F', weight=3),
+            Edge(start='F', destination='G', weight=2),
         ]
         expected_search_result = ShortestPathSearchResult(tuple(path))
         assert expected_search_result == actual_search_result

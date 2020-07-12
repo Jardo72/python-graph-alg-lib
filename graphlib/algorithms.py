@@ -28,7 +28,7 @@ from graphlib.graph import AbstractGraph, GraphType
 from graphlib.util import PriorityQueue
 
 
-def sort_toplogically(graph: AbstractGraph) -> Sequence[str]:
+def sort_topologically(graph: AbstractGraph) -> Sequence[str]:
     """Creates and returns a new sequence containing topologically sorted
     vertices of the given graph.
 
