@@ -21,11 +21,12 @@
 """
 
 from collections import deque
+from copy import copy
 from dataclasses import dataclass
-from typing import Dict, Optional, Sequence, Tuple
+from typing import Dict, Sequence, Tuple
 
 from graphlib.graph import AbstractGraph, GraphType
-from graphlib.util import PriorityQueue
+from graphlib.util import PriorityQueue, QueueableItem
 
 
 def sort_topologically(graph: AbstractGraph) -> Sequence[str]:
@@ -121,11 +122,11 @@ class _DistanceTableEntry:
     """Simple data-class representing a single entry of the distance table.
     """
     vertex: str
-    predecessor: Optional[str] = None
-    distance: Optional[int] = None
+    predecessor: str
+    distance: int
 
     def _update(self, predecessor: str, distance: int):
-        if self.distance is None or self.distance > distance:
+        if self.distance > distance:
             self.distance = distance
             self.predecessor = predecessor
 
@@ -134,21 +135,31 @@ _DistanceTable = Dict[str, _DistanceTableEntry]
 
 
 def _build_distance_table(request: ShortestPathSearchRequest) -> _DistanceTable:
-    distance_table: _DistanceTable = {}
+    distance_table: _DistanceTable = {
+        request.start: _DistanceTableEntry(request.start, request.start, 0)
+    }
+    explored_vertices = {request.start}
     queue = PriorityQueue()
     graph = request.graph
 
-    for vertex in request.graph.get_sorted_vertices():
-        distance_table[vertex] = _DistanceTableEntry(vertex)
-    distance_table[request.start].predecessor = request.start
-    distance_table[request.start].distance = 0
+    for adjacent_vertex in request.graph.get_adjacent_vertices(request.start):
+        weight = request.graph.get_edge_weight(request.start, adjacent_vertex)
+        distance_table_entry = _DistanceTableEntry(
+            vertex=adjacent_vertex,
+            predecessor=request.start,
+            distance=weight)
+        distance_table[adjacent_vertex] = distance_table_entry
+        item = QueueableItem(key=adjacent_vertex, priority=weight, value=copy(distance_table_entry))
+        queue.enqueue(item)
 
-    queue.enqueue(0, request.start)
     while not queue.empty():
-        current_vertex = queue.dequeue()
-        current_distance = distance_table[current_vertex].distance
+        item = queue.dequeue()
+        current_vertex = item.key
+        explored_vertices.add(current_vertex)
         adjacent_vertices = graph.get_adjacent_vertices(current_vertex)
         for adjacent_vertex in adjacent_vertices:
+            if adjacent_vertex in explored_vertices:
+                continue
             weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
 
     return distance_table

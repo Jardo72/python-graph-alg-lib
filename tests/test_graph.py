@@ -22,7 +22,7 @@
 
 from abc import ABC, abstractmethod
 
-from pytest import mark, raises
+from pytest import raises
 
 from graphlib.graph import AbstractGraph, AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
 
@@ -151,6 +151,8 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         assert 5 == graph.get_edge_weight('F', 'E'), 'F -> E'
 
     def test_proper_adjacent_vertices_are_returned_for_directed_graph(self):
+        # be aware of the fact that this test case also covers vertices that are
+        # only the destination of an edge (they are not the start of any edge)
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -194,7 +196,6 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         with raises(ValueError, match=r'Vertex with the name X not found\.'):
             graph.get_edge_weight('X', 'B')
 
-    @mark.skip('Failing - correction is needed in the tested classes')
     def test_attempt_to_get_edge_weight_for_non_existent_destination_vertex_leads_to_error(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')

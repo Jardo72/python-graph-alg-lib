@@ -152,10 +152,14 @@ class AbstractGraph(ABC):
     def is_weighted(self) -> bool:
         """Verifies whether this graph is weighted or unweighted.
 
+        A graph is considered as unweighted if all edges it involves have the
+        same weight. If a graph involves at at least two edges with distinct
+        weight, it is considered as weighted.
+
         Raises:
             NotImplementedError: This method always raises this exception as
                                  this is an abstract method derived classes
-                                 have to implement.
+                                 have to implement/override.
 
         Returns:
             bool: Derived classes implementing this method are supposed to
@@ -606,10 +610,14 @@ class AdjacencySetGraph(AbstractGraph):
         Returns:
             int: The weight of the edge connecting the given pair of vertices.
         """
-        if not vertex_one in self._adjacency_sets:
-            message = f'Vertex with the name {vertex_one} not found.'
-            raise ValueError(message)
+        self._raise_error_if_vertex_unknown(vertex_one)
+        self._raise_error_if_vertex_unknown(vertex_two)
         return self._adjacency_sets[vertex_one].get_edge_weight(vertex_two)
+
+    def _raise_error_if_vertex_unknown(self, vertex: str):
+        if not vertex in self._adjacency_sets:
+            message = f'Vertex with the name {vertex} not found.'
+            raise ValueError(message)
 
     def get_in_degree(self, vertex: str) -> int:
         """Returns the in-degree of the vertex with the given name.
