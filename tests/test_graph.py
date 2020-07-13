@@ -128,6 +128,23 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('F', 'E')
         assert ('A', 'B', 'C', 'D', 'E', 'F') == graph.get_sorted_vertices(), 'After F -> E'
 
+    def test_proper_in_degree_is_returned(self):
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
+        graph.add_edge('B', 'E')
+        graph.add_edge('C', 'D')
+        graph.add_edge('D', 'F')
+        graph.add_edge('F', 'E')
+
+        assert graph.get_in_degree('A') == 0
+        assert graph.get_in_degree('B') == 1
+        assert graph.get_in_degree('C') == 2
+        assert graph.get_in_degree('D') == 1
+        assert graph.get_in_degree('E') == 2
+        assert graph.get_in_degree('F') == 1
+
     def test_proper_edge_weight_is_returned(self):
         # TODO:
         # - for undirected graph, we should test both directions
