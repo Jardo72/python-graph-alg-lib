@@ -2,6 +2,8 @@
 .pytest_cache/
 .mypy_cache/
 .vscode
+.coverage
+htmlcov/
 build/
 dist/
 *.egg-info/
