@@ -28,7 +28,10 @@ from graphlib.algorithms import _DistanceTable
 from graphlib.graph import AdjacencySetGraph, GraphType
 
 
-class TestDistanceTable:
+class TestDistanceTable: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the :class:
+    graphlib.algorithms._DistanceTable.
+    """
 
     def test_starting_vertex_has_distance_zero_and_itself_as_predecessor(self):
         distance_table = _DistanceTable('A')
@@ -102,7 +105,7 @@ class TestDistanceTable:
 
 class TestTopologicalSort: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :method:
-    graphlib.graph.sort_toplogically.
+    graphlib.algorithms.sort_toplogically.
     """
 
     def test_topological_sort_returns_vertices_in_proper_order_case_01(self):
@@ -190,6 +193,9 @@ class TestTopologicalSort: # pylint: disable=R0201,C0116
 
 
 class TestShortestPath: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the :class:
+    graphlib.algorithms.ShortestPathSearchResult.
+    """
 
     def test_shortest_path_search_result_provides_proper_derived_properties(self):
         path = [

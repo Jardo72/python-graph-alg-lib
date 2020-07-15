@@ -117,7 +117,6 @@ class ShortestPathSearchResult:
         return sum(map(lambda edge: edge.weight, self.path))
 
 
-# TODO: can this class be changed to inner class (nested in _DistanceTable)?
 @dataclass
 class _DistanceTableEntry:
     """Simple data-class representing a single entry of the distance table.
@@ -127,6 +126,19 @@ class _DistanceTableEntry:
     distance_from_start: int
 
     def update(self, predecessor: str, distance_from_start: int) -> bool:
+        """Updates the predecessor and the distance from start of this entry to
+        the given values, assumed the given distance from start is less than the
+        current distance from start.
+
+        Args:
+            predecessor (str): [description]
+            distance_from_start (int): [description]
+
+        Returns:
+            bool: True if this entry has been updated; False if the updated has
+                  been ignored (i.e. the given distance from start is not less
+                  than the current distance from start).
+        """
         if self.distance_from_start > distance_from_start:
             self.distance_from_start = distance_from_start
             self.predecessor = predecessor
@@ -227,7 +239,8 @@ class _DistanceTable:
         print(f'Created entry: {self._entries[vertex]}')
         return True
 
-    def backtrack_shortest_path(self, request: ShortestPathSearchRequest) -> ShortestPathSearchResult:
+    def backtrack_shortest_path(self,
+                                request: ShortestPathSearchRequest) -> ShortestPathSearchResult:
         # TODO: we should also check if the request carries the same start
         # vertex as the one used to create this distance table
         graph = request.graph
