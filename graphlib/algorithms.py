@@ -80,8 +80,9 @@ class ShortestPathSearchRequest:
 
 @dataclass(frozen=True)
 class Edge:
-    """Immutable structure representing a single edge of the shortest path
-    search result (see :class: ShortestPathSearchResult).
+    """Immutable structure representing a single edge of a shortest path
+    search result (see :class: ShortestPathSearchResult) or a minimum
+    spanning tree (see :class: MinimumSpanningTree).
     """
     start: str
     destination: str
@@ -115,6 +116,28 @@ class ShortestPathSearchResult:
         found shortest path.
         """
         return sum(map(lambda edge: edge.weight, self.path))
+
+
+@dataclass(frozen=True)
+class MinimumSpanningTree:
+    """Immutable structure whose instances will representing minimum spanning
+    trees.
+
+    The start attribute carries the vertex where the search whose result is
+    represented by this object started.
+    """
+    start: str
+    edges: Tuple[Edge, ...]
+
+    @property
+    def overall_weight(self):
+        """The overall weight of the minimum spanning represeted by this
+        object.
+
+        In other words, the sum of the weights of all edges comprising the
+        minimum spanning tree.
+        """
+        return sum(map(lambda edge: edge.weight, self.edges))
 
 
 @dataclass

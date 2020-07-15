@@ -22,7 +22,7 @@
 
 from pytest import mark, raises
 
-from graphlib.algorithms import Edge, ShortestPathSearchRequest, ShortestPathSearchResult
+from graphlib.algorithms import Edge, MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
 from graphlib.algorithms import find_shortest_path, sort_topologically
 from graphlib.algorithms import _DistanceTable
 from graphlib.graph import AdjacencySetGraph, GraphType
@@ -194,18 +194,19 @@ class TestTopologicalSort: # pylint: disable=R0201,C0116
 
 class TestShortestPath: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :class:
-    graphlib.algorithms.ShortestPathSearchResult.
+    graphlib.algorithms.ShortestPathSearchResult class and the method :method:
+    graphlib.algorithms.find_shortest_path.
     """
 
     def test_shortest_path_search_result_provides_proper_derived_properties(self):
-        path = [
-            Edge(start = 'A', destination = 'B', weight = 2),
-            Edge(start = 'B', destination = 'C', weight = 3),
-            Edge(start = 'C', destination = 'F', weight = 5),
-            Edge(start = 'F', destination = 'H', weight = 2),
-            Edge(start = 'H', destination = 'L', weight = 7),
-        ]
-        shortest_path = ShortestPathSearchResult(tuple(path))
+        path = (
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='C', weight=3),
+            Edge(start='C', destination='F', weight=5),
+            Edge(start='F', destination='H', weight=2),
+            Edge(start='H', destination='L', weight=7),
+        )
+        shortest_path = ShortestPathSearchResult(path)
 
         assert 'A' == shortest_path.start
         assert 'L' == shortest_path.destination
@@ -269,3 +270,20 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         ]
         expected_search_result = ShortestPathSearchResult(tuple(path))
         assert expected_search_result == actual_search_result
+
+
+class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the :class:
+    graphlib.algorithms.MinimumSpanningTree class.
+    """
+
+    def test_minimum_spanning_tree_provides_proper_derived_properties(self):
+        edges = (
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='C', weight=3),
+            Edge(start='C', destination='F', weight=5),
+            Edge(start='D', destination='D', weight=2),
+        )
+        minimum_spanning_tree = MinimumSpanningTree('A', edges)
+
+        assert minimum_spanning_tree.overall_weight == 12
