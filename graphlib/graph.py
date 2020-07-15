@@ -636,26 +636,3 @@ class AdjacencySetGraph(AbstractGraph):
             if vertex in adjacency_set:
                 result = result + 1
         return result
-
-
-def dump_graph(graph: AbstractGraph):
-    """Dumps the vertices and edges of the given graph to stdout.
-
-    The dump is generated in a structured way, and it also includes the weights
-    of the edges.
-
-    Args:
-        graph (AbstractGraph): The graph to be dumped.
-    """
-    weighted = 'YES' if graph.is_weighted else 'NO'
-    print()
-    print(f'Graph type: {graph.graph_type}')
-    print(f'Weighted: {weighted}')
-    print(f'Vertices (totally {graph.vertex_count}):')
-    for current_vertex in graph.get_sorted_vertices():
-        print(f' - {current_vertex}')
-    print('Edges:')
-    for current_vertex in graph.get_sorted_vertices():
-        for adjacent_vertex in graph.get_adjacent_vertices(current_vertex):
-            weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
-            print(f' - {current_vertex} -> {adjacent_vertex} (weight = {weight})')

@@ -24,7 +24,80 @@ from pytest import mark, raises
 
 from graphlib.algorithms import Edge, ShortestPathSearchRequest, ShortestPathSearchResult
 from graphlib.algorithms import find_shortest_path, sort_topologically
+from graphlib.algorithms import _DistanceTable
 from graphlib.graph import AdjacencySetGraph, GraphType
+
+
+class TestDistanceTable:
+
+    def test_starting_vertex_has_distance_zero_and_itself_as_predecessor(self):
+        distance_table = _DistanceTable('A')
+
+        assert distance_table.get_distance_from_start('A') == 0
+        assert distance_table.get_predecessor('A') == 'A'
+
+    def test_in_operator_tests_presence_of_entry_for_the_given_vertex(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 4)
+        distance_table.update('C', 'A', 2)
+
+        assert 'A' in distance_table
+        assert 'B' in distance_table
+        assert 'C' in distance_table
+        assert 'X' not in distance_table
+
+    def test_updates_leading_to_shorter_distance_are_accepted(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 4)
+        distance_table.update('C', 'A', 2)
+        distance_table.update('D', 'C', 8)
+
+        assert distance_table.update('D', 'B', 5) == True
+        assert distance_table.get_distance_from_start('D') == 5
+        assert distance_table.get_predecessor('D') == 'B'
+
+    def updates_leading_to_longer_distance_are_ignored(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 4)
+        distance_table.update('C', 'A', 2)
+        distance_table.update('D', 'C', 8)
+
+        assert distance_table.update('D', 'B', 9) == False
+        assert distance_table.get_distance_from_start('D') == 8
+        assert distance_table.get_predecessor('D') == 'C'
+    
+    @mark.skip('Test case not implemented yet')
+    def test_backtracking_reconstructs_proper_shortest_path(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 2)
+        distance_table.update('C', 'A', 3)
+        distance_table.update('D', 'C', 6)
+        distance_table.update('D', 'B', 4)
+        distance_table.update('F', 'B', 4)
+        distance_table.update('E', 'D', 9)
+        distance_table.update('F', 'E', 12)
+        distance_table.update('G', 'F', 15)
+
+        # search_result = distance_table.backtrack_shortest_path('G')
+        # assert search_result == ShortestPathSearchResult(tuple(
+        #     Edge(start='A', destination='B', weight=2),
+        #     Edge(start='B', destination='F', weight=2),
+        #     Edge(start='F', destination='G', weight=3),
+        # ))
+
+    def test_attempt_to_get_distance_for_non_existent_vertex_leads_to_error(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 4)
+
+        with raises(ValueError, match=r'No distance table entry found for the vertex X\.'):
+            distance_table.get_distance_from_start('X')
+
+    def test_attempt_to_get_predecessor_for_non_existent_vertex_leads_to_error(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 4)
+
+        with raises(ValueError, match=r'No distance table entry found for the vertex Y\.'):
+            distance_table.get_predecessor('Y')
 
 
 class TestTopologicalSort: # pylint: disable=R0201,C0116
@@ -132,9 +205,39 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         assert 'L' == shortest_path.destination
         assert 19 == shortest_path.overall_distance
 
+    @mark.skip('Failing - the tested functionality does not seem to work yet')
+    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case01(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('A', 'D')
+        graph.add_edge('B', 'E')
+        graph.add_edge('E', 'F')
+        graph.add_edge('C', 'G')
+        graph.add_edge('C', 'H')
+        graph.add_edge('G', 'E')
+        graph.add_edge('F', 'I')
+        graph.add_edge('H', 'I')
+        graph.add_edge('I', 'L')
+        graph.add_edge('L', 'M')
+        graph.add_edge('D', 'J')
+        graph.add_edge('J', 'K')
+        graph.add_edge('K', 'M')
+
+        search_request = ShortestPathSearchRequest(graph, start = 'A', destination = 'L')
+        actual_search_result = find_shortest_path(search_request)
+
+        path = [
+            Edge(start='A', destination='D', weight=1),
+            Edge(start='D', destination='J', weight=1),
+            Edge(start='J', destination='K', weight=1),
+            Edge(start='K', destination='M', weight=1),
+        ]
+        expected_search_result = ShortestPathSearchResult(tuple(path))
+        assert expected_search_result == actual_search_result
 
     @mark.skip('Functionality not implemented yet')
-    def test_shortest_path_search_finds_proper_shortest_path(self):
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 4)
