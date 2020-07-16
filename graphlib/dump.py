@@ -86,7 +86,7 @@ def dump_minimum_spanning_tree(minimum_spanning_tree: MinimumSpanningTree, outpu
                                                   instance.
     """
     output.write('\n')
-    output.write(f'Minimum spanning tree (search start {minimum_spanning_tree.start})\n')
+    output.write(f'Minimum spanning tree (search start {minimum_spanning_tree.search_start})\n')
     output.write(f'Overall weight {minimum_spanning_tree.overall_weight}\n')
     output.write('Edges:\n')
     for edge in minimum_spanning_tree.edges:

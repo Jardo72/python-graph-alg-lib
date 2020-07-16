@@ -126,7 +126,7 @@ class MinimumSpanningTree:
     The start attribute carries the vertex where the search whose result is
     represented by this object started.
     """
-    start: str
+    search_start: str
     edges: Tuple[Edge, ...]
 
     @property

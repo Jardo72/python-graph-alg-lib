@@ -9,9 +9,19 @@ Library of Graph Algorithms for Python is a simple Python library providing impl
 ## Runtime Environment, Source Code Organization etc.
 
 ### Python Version and Dependencies
-
+TODO
+- Python 3.8
+- library code depends only on the Python Standard Library; it does not depend on any other module
+- unit tests depend on PyTest 5.4.3
+- optionally PyTest Coverage 2.10.0 if you want to measre the code coverage
 
 ### Library Code
+The library code is divided to four modules:
+- `graphlib.grap` module provides two graph implementation (adjacency matrix, adjacency set), plus
+an abstract base class prescribing the public API of any graph implementation.
+- `graphlib.algorithms`
+- `graphlib.util` module provides functionalities that support the implementation of the algorithms, for instance a priority queue.
+- `graphlib.dump` module provides dump-functions that can pretty-print various structures like graph, result of shortest path search, minimum spanning tree etc. These functions can write their output to a file, to stdout, or to an instance of io.StringIO.
 
 
 ### Test Code
