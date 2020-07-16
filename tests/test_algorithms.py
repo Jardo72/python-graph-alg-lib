@@ -212,8 +212,29 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         assert 'L' == shortest_path.destination
         assert 19 == shortest_path.overall_distance
 
-    @mark.skip('Failing - the tested functionality does not seem to work yet')
     def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case01(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'D')
+        graph.add_edge('C', 'D')
+        graph.add_edge('D', 'E')
+        graph.add_edge('E', 'F')
+        graph.add_edge('C', 'E')
+        graph.add_edge('B', 'F')
+
+        search_request = ShortestPathSearchRequest(graph, start='A', destination='F')
+        actual_search_result = find_shortest_path(search_request)
+
+        path = (
+            Edge(start='A', destination='B', weight=1),
+            Edge(start='B', destination='F', weight=1),
+        )
+        expected_search_result = ShortestPathSearchResult(path)
+        assert expected_search_result == actual_search_result
+
+    @mark.skip('Failing - analysis needed')
+    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case02(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -231,16 +252,16 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         graph.add_edge('J', 'K')
         graph.add_edge('K', 'M')
 
-        search_request = ShortestPathSearchRequest(graph, start = 'A', destination = 'L')
+        search_request = ShortestPathSearchRequest(graph, start='A', destination='L')
         actual_search_result = find_shortest_path(search_request)
 
-        path = [
+        path = (
             Edge(start='A', destination='D', weight=1),
             Edge(start='D', destination='J', weight=1),
             Edge(start='J', destination='K', weight=1),
             Edge(start='K', destination='M', weight=1),
-        ]
-        expected_search_result = ShortestPathSearchResult(tuple(path))
+        )
+        expected_search_result = ShortestPathSearchResult(path)
         assert expected_search_result == actual_search_result
 
     @mark.skip('Functionality not implemented yet')

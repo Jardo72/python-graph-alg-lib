@@ -22,15 +22,15 @@
 
 from io import StringIO
 
-from pytest import mark
-
-from graphlib.dump import dump_graph, dump_shortest_path
+from graphlib.dump import dump_graph, dump_minimum_spanning_tree, dump_shortest_path
 from graphlib.graph import AdjacencySetGraph, GraphType
-from graphlib.algorithms import Edge, ShortestPathSearchResult
+from graphlib.algorithms import Edge, MinimumSpanningTree, ShortestPathSearchResult
 
-class TestGumpGraph: # pylint: disable=R0201,C0116
+class TestDumpGraph: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the :method:
+    graphlib.dump.dump_graph.
+    """
     
-    @mark.skip('Test case not implemented yet')
     def test_graph_is_dumped_properly_for_directed_weighted_graph(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 3)
@@ -50,21 +50,18 @@ Vertices (totally 4):
  - B
  - C
  - D
- Edges:
+Edges:
  - A -> B (weight = 3)
  - A -> C (weight = 2)
  - B -> D (weight = 5)
  - C -> D (weight = 4)
- """
+"""
 
-    @mark.skip('Test case not implemented yet')
     def test_graph_is_dumped_properly_for_undirected_unweighted_graph(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
-        graph.add_edge('', '')
-        graph.add_edge('', '')
-        graph.add_edge('', '')
-        graph.add_edge('', '')
-        graph.add_edge('', '')
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
 
         with StringIO() as output:
             dump_graph(graph, output)
@@ -73,20 +70,24 @@ Vertices (totally 4):
         assert result == """
 Graph type: GraphType.UNDIRECTED
 Weighted: NO
-Vertices (totally 4):
+Vertices (totally 3):
  - A
  - B
  - C
- - D
- Edges:
- - A -> B (weight = 3)
- - A -> C (weight = 2)
- - B -> D (weight = 5)
- - C -> D (weight = 4)
+Edges:
+ - A -> B (weight = 1)
+ - A -> C (weight = 1)
+ - B -> A (weight = 1)
+ - B -> C (weight = 1)
+ - C -> A (weight = 1)
+ - C -> B (weight = 1)
 """
 
 
 class TestDumpShortestPath: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the :method:
+    graphlib.dump.dump_shortest_path.
+    """
 
     def test_shortest_path_is_dumped_properly(self):
         path = (
@@ -107,4 +108,32 @@ Path:
  - A -> B (weight = 3)
  - B -> C (weight = 2)
  - C -> D (weight = 5)
+"""
+
+
+class TestDumpMinimumSpanningTree:
+    """Collection of test methods exercising the :method:
+    graphlib.dump.dump_minimum_spanning_tree.
+    """
+
+    def test_minimum_spanning_tree_is_dumped_properly(self):
+        edges = (
+            Edge(start='A', destination='B', weight=3),
+            Edge(start='B', destination='C', weight=2),
+            Edge(start='C', destination='D', weight=5),
+            Edge(start='C', destination='E', weight=4),
+        )
+        minimum_spanning_tree = MinimumSpanningTree('A', edges)
+        with StringIO() as output:
+            dump_minimum_spanning_tree(minimum_spanning_tree, output)
+            result = output.getvalue()
+        
+        assert result == """
+Minimum spanning tree (search start A)
+Overall weight 14
+Edges:
+ - A -> B (weight = 3)
+ - B -> C (weight = 2)
+ - C -> D (weight = 5)
+ - C -> E (weight = 4)
 """

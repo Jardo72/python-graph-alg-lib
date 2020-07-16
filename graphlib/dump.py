@@ -20,7 +20,7 @@
 """This module provides methods allowing to dump various data structures
 like a graph or a result of shortest path search.
 """
-from graphlib.algorithms import ShortestPathSearchResult
+from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchResult
 from graphlib.graph import AbstractGraph
 
 def dump_graph(graph: AbstractGraph, output):
@@ -52,7 +52,7 @@ def dump_graph(graph: AbstractGraph, output):
 def dump_shortest_path(shortest_path: ShortestPathSearchResult, output):
     """Dumps the given shortest path to the given text output.
 
-    The dump provides the information about the start and the destination of the
+    The dump provides information about the start and the destination of the
     path, the overall distance, and about the individual edges comprising the
     path.
 
@@ -68,4 +68,26 @@ def dump_shortest_path(shortest_path: ShortestPathSearchResult, output):
     output.write(f'Overall distance {shortest_path.overall_distance}\n')
     output.write('Path:\n')
     for edge in shortest_path.path:
+        output.write(f' - {edge.start} -> {edge.destination} (weight = {edge.weight})\n')
+
+
+def dump_minimum_spanning_tree(minimum_spanning_tree: MinimumSpanningTree, output):
+    """Dumps the given minimum spanning tree to the given text output.
+
+    The dump provides information about the starting vertex of the search
+    that has found the given minimum spanning tree, plus the overall weight.
+
+    Args:
+        shortest_path (ShortestPathSearchResult): The minimum spanning spanning
+                                                  tree to be dumped.
+        output:                                   The text output the dump is to
+                                                  be written to. It can be a file,
+                                                  sys.stdout, or an io.StringIO
+                                                  instance.
+    """
+    output.write('\n')
+    output.write(f'Minimum spanning tree (search start {minimum_spanning_tree.start})\n')
+    output.write(f'Overall weight {minimum_spanning_tree.overall_weight}\n')
+    output.write('Edges:\n')
+    for edge in minimum_spanning_tree.edges:
         output.write(f' - {edge.start} -> {edge.destination} (weight = {edge.weight})\n')
