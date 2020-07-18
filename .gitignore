@@ -6,4 +6,5 @@
 htmlcov/
 build/
 dist/
+assets/
 *.egg-info/

@@ -82,7 +82,7 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         distance_table.update('G', 'F', 15)
 
         # search_result = distance_table.backtrack_shortest_path('G')
-        # assert search_result == ShortestPathSearchResult(tuple(
+        # distance_table.backtrack_shortest_path('G') == ShortestPathSearchResult((
         #     Edge(start='A', destination='B', weight=2),
         #     Edge(start='B', destination='F', weight=2),
         #     Edge(start='F', destination='G', weight=3),
