@@ -59,6 +59,14 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         assert distance_table.get_distance_from_start('D') == 5
         assert distance_table.get_predecessor('D') == 'B'
 
+    def updates_leading_to_equal_distance_are_ignored(self):
+        distance_table = _DistanceTable('A')
+        distance_table.update('B', 'A', 2)
+        distance_table.update('C', 'A', 2)
+        distance_table.update('D', 'C', 5)
+
+        assert distance_table.update('D', 'B', 5) == False
+
     def updates_leading_to_longer_distance_are_ignored(self):
         distance_table = _DistanceTable('A')
         distance_table.update('B', 'A', 4)

@@ -21,7 +21,6 @@
 """
 
 from collections import deque
-from copy import copy
 from dataclasses import dataclass
 from typing import Dict, Sequence, Tuple
 
@@ -185,6 +184,7 @@ class _DistanceTable:
         self._entries: Dict[str, _DistanceTableEntry] = {
             starting_vertex: _DistanceTableEntry(starting_vertex, starting_vertex, 0)
         }
+        print(f'Distance table entry created for starting vertex {starting_vertex}')
 
     def get_distance_from_start(self, vertex: str) -> int:
         """Returns the currently known shortest distance of the given vertex from
@@ -335,22 +335,28 @@ def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _Dista
         details = (request.start, weight)
         item = QueueableItem(key=adjacent_vertex, priority=weight, value=details)
         queue.enqueue(item)
+        print(f'{adjacent_vertex} added to the queue')
 
     while not queue.empty():
         item = queue.dequeue()
         current_vertex = item.key
         predecessor, predecessor_distance_from_start = item.value
         explored_vertices.add(current_vertex)
+        print(f'Adding vertex {current_vertex} to explored vertices')
         for adjacent_vertex in graph.get_adjacent_vertices(current_vertex):
             if adjacent_vertex in explored_vertices:
+                print(f'Adjacent vertex {adjacent_vertex} already explored')
                 continue
+            print(f'Adjacent vertex {adjacent_vertex} not explored yet')
             weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
             distance_from_start = predecessor_distance_from_start + weight
-            updated = distance_table.update(adjacent_vertex, current_vertex, distance_from_start)
+            print(f'Predecessor = {predecessor}, distance from start = {distance_from_start}')
             if distance_table.update(adjacent_vertex, predecessor, distance_from_start):
+                print(f'Distance table updated for {adjacent_vertex}')
                 details = (current_vertex, distance_from_start)
                 item = QueueableItem(key=adjacent_vertex, priority=weight, value=details)
                 queue.enqueue(item)
+                print(f'{adjacent_vertex} added to the queue')
 
     return distance_table
 
