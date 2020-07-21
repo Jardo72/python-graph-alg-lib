@@ -220,19 +220,8 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         assert 'L' == shortest_path.destination
         assert 19 == shortest_path.overall_distance
 
-    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case01(self):
-        # TODO:
-        # - this is the same graph as in the test method below
-        # - extract the graph creation to a separate & reusable method
-        graph = AdjacencySetGraph(GraphType.DIRECTED)
-        graph.add_edge('A', 'B')
-        graph.add_edge('A', 'C')
-        graph.add_edge('B', 'D')
-        graph.add_edge('C', 'D')
-        graph.add_edge('D', 'E')
-        graph.add_edge('E', 'F')
-        graph.add_edge('C', 'E')
-        graph.add_edge('B', 'F')
+    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case_01(self):
+        graph = self._create_unweighted_graph_one()
 
         search_request = ShortestPathSearchRequest(graph, start='A', destination='F')
         assert find_shortest_path(search_request) == ShortestPathSearchResult((
@@ -240,19 +229,8 @@ class TestShortestPath: # pylint: disable=R0201,C0116
             Edge(start='B', destination='F', weight=1),
         ))
 
-    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case02(self):
-        # TODO:
-        # - this is the same graph as in the test method above
-        # - extract the graph creation to a separate & reusable method
-        graph = AdjacencySetGraph(GraphType.DIRECTED)
-        graph.add_edge('A', 'B')
-        graph.add_edge('A', 'C')
-        graph.add_edge('B', 'D')
-        graph.add_edge('C', 'D')
-        graph.add_edge('D', 'E')
-        graph.add_edge('E', 'F')
-        graph.add_edge('C', 'E')
-        graph.add_edge('B', 'F')
+    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case_02(self):
+        graph = self._create_unweighted_graph_one()
 
         search_request = ShortestPathSearchRequest(graph, start='A', destination='E')
         assert find_shortest_path(search_request) == ShortestPathSearchResult((
@@ -260,22 +238,8 @@ class TestShortestPath: # pylint: disable=R0201,C0116
             Edge(start='C', destination='E', weight=1),
         ))
 
-    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case03(self):
-        # TODO:
-        # - this is the same graph as in the test method below
-        # - extract the graph creation to a separate & reusable method
-        graph = AdjacencySetGraph(GraphType.DIRECTED)
-        graph.add_edge('A', 'B')
-        graph.add_edge('A', 'C')
-        graph.add_edge('B', 'D')
-        graph.add_edge('C', 'D')
-        graph.add_edge('C', 'E')
-        graph.add_edge('D', 'E')
-        graph.add_edge('E', 'F')
-        graph.add_edge('F', 'G')
-        graph.add_edge('F', 'H')
-        graph.add_edge('G', 'H')
-        graph.add_edge('H', 'I')
+    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case_03(self):
+        graph = self._create_unweighted_graph_two()
 
         search_request = ShortestPathSearchRequest(graph, start='A', destination='I')
         assert find_shortest_path(search_request) == ShortestPathSearchResult((
@@ -286,10 +250,30 @@ class TestShortestPath: # pylint: disable=R0201,C0116
             Edge(start='H', destination='I', weight=1),
         ))
 
-    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case04(self):
-        # TODO:
-        # - this is the same graph as in the test method above
-        # - extract the graph creation to a separate & reusable method
+    def test_shortest_path_search_finds_proper_shortest_path_for_unweighted_graph_case_04(self):
+        graph = self._create_unweighted_graph_two()
+
+        search_request = ShortestPathSearchRequest(graph, start='B', destination='G')
+        assert find_shortest_path(search_request) == ShortestPathSearchResult((
+            Edge(start='B', destination='D', weight=1),
+            Edge(start='D', destination='E', weight=1),
+            Edge(start='E', destination='F', weight=1),
+            Edge(start='F', destination='G', weight=1),
+        ))
+
+    def _create_unweighted_graph_one(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'D')
+        graph.add_edge('C', 'D')
+        graph.add_edge('D', 'E')
+        graph.add_edge('E', 'F')
+        graph.add_edge('C', 'E')
+        graph.add_edge('B', 'F')
+        return graph
+
+    def _create_unweighted_graph_two(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
         graph.add_edge('A', 'C')
@@ -302,17 +286,74 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         graph.add_edge('F', 'H')
         graph.add_edge('G', 'H')
         graph.add_edge('H', 'I')
+        return graph
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_01(self):
+        graph = self._create_weighted_graph_one()
+
+        search_request = ShortestPathSearchRequest(graph, start = 'A', destination = 'G')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='C', weight=1),
+            Edge(start='C', destination='F', weight=3),
+            Edge(start='F', destination='G', weight=2),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_02(self):
+        graph = self._create_weighted_graph_one()
 
         search_request = ShortestPathSearchRequest(graph, start='B', destination='G')
-        assert find_shortest_path(search_request) == ShortestPathSearchResult((
-            Edge(start='B', destination='D', weight=1),
-            Edge(start='D', destination='E', weight=1),
-            Edge(start='E', destination='F', weight=1),
-            Edge(start='F', destination='G', weight=1),
-        ))
+        actual_search_result = find_shortest_path(search_request)
 
-    @mark.skip('Functionality not implemented yet')
-    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph(self):
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='B', destination='C', weight=1),
+            Edge(start='C', destination='F', weight=3),
+            Edge(start='F', destination='G', weight=2),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_03(self):
+        graph = self._create_weighted_graph_one()
+
+        search_request = ShortestPathSearchRequest(graph, start='D', destination='G')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='D', destination='C', weight=3),
+            Edge(start='C', destination='F', weight=3),
+            Edge(start='F', destination='G', weight=2),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_04(self):
+        graph = self._create_weighted_graph_one()
+
+        search_request = ShortestPathSearchRequest(graph, start='A', destination='E')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='E', weight=5),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_05(self):
+        graph = self._create_weighted_graph_one()
+
+        search_request = ShortestPathSearchRequest(graph, start='D', destination='E')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='D', destination='C', weight=3),
+            Edge(start='C', destination='F', weight=3),
+            Edge(start='F', destination='E', weight=5),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def _create_weighted_graph_one(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 4)
@@ -326,18 +367,8 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         graph.add_edge('F', 'E', 5)
         graph.add_edge('E', 'G', 3)
         graph.add_edge('F', 'G', 2)
+        return graph
 
-        search_request = ShortestPathSearchRequest(graph, start = 'A', destination = 'G')
-        actual_search_result = find_shortest_path(search_request)
-
-        path = [
-            Edge(start='A', destination='B', weight=2),
-            Edge(start='B', destination='C', weight=1),
-            Edge(start='C', destination='F', weight=3),
-            Edge(start='F', destination='G', weight=2),
-        ]
-        expected_search_result = ShortestPathSearchResult(tuple(path))
-        assert expected_search_result == actual_search_result
 
 
 class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
