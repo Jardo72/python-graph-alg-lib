@@ -353,6 +353,46 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         ))
         assert expected_search_result == actual_search_result
 
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_06(self):
+        graph = self._create_weighted_graph_two()
+
+        search_request = ShortestPathSearchRequest(graph, start='A', destination='G')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='A', destination='D', weight=3),
+            Edge(start='D', destination='G', weight=6),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_07(self):
+        graph = self._create_weighted_graph_two()
+
+        search_request = ShortestPathSearchRequest(graph, start='A', destination='H')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='A', destination='D', weight=3),
+            Edge(start='D', destination='C', weight=2),
+            Edge(start='C', destination='E', weight=2),
+            Edge(start='E', destination='F', weight=1),
+            Edge(start='F', destination='H', weight=2),
+        ))
+        assert expected_search_result == actual_search_result
+
+    def test_shortest_path_search_finds_proper_shortest_path_for_weighted_graph_case_08(self):
+        graph = self._create_weighted_graph_two()
+
+        search_request = ShortestPathSearchRequest(graph, start='C', destination='G')
+        actual_search_result = find_shortest_path(search_request)
+
+        expected_search_result = ShortestPathSearchResult((
+            Edge(start='C', destination='E', weight=2),
+            Edge(start='E', destination='F', weight=1),
+            Edge(start='F', destination='G', weight=3),
+        ))
+        assert expected_search_result == actual_search_result
+
     def _create_weighted_graph_one(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
@@ -367,6 +407,21 @@ class TestShortestPath: # pylint: disable=R0201,C0116
         graph.add_edge('F', 'E', 5)
         graph.add_edge('E', 'G', 3)
         graph.add_edge('F', 'G', 2)
+        return graph
+
+    def _create_weighted_graph_two(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'D', 3)
+        graph.add_edge('B', 'D', 2)
+        graph.add_edge('D', 'C', 2)
+        graph.add_edge('C', 'E', 2)
+        graph.add_edge('D', 'F', 8)
+        graph.add_edge('D', 'G', 6)
+        graph.add_edge('E', 'F', 1)
+        graph.add_edge('E', 'H', 4)
+        graph.add_edge('F', 'H', 2)
+        graph.add_edge('F', 'G', 3)
+        graph.add_edge('H', 'G', 4)
         return graph
 
 
