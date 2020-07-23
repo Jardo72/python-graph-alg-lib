@@ -44,5 +44,5 @@ python -m pytest -v tests
 
 The following command triggers the execution of the unit tests, and it also generate code coverage report in HTML format. The command also generates detailed test results in HTML format to the file `test-results.html`.
 ```
-python -m pytest --cov=graphlib --cov-branch --cov-report html tests --html=test-results.html
+python -m pytest --cov=graphlib --cov-branch --cov-report html --html=test-results.html tests
 ```

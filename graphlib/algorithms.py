@@ -337,7 +337,7 @@ def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _Dista
     while not queue.empty():
         item = queue.dequeue()
         current_vertex = item.key
-        current_vertex_distance_from_start = item.value
+        current_distance_from_start = item.value
         explored_vertices.add(current_vertex)
         print(f'Adding vertex {current_vertex} to explored vertices')
         for adjacent_vertex in graph.get_adjacent_vertices(current_vertex):
@@ -346,11 +346,12 @@ def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _Dista
                 continue
             print(f'Adjacent vertex {adjacent_vertex} not explored yet')
             weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
-            adjacent_vertex_distance_from_start = current_vertex_distance_from_start + weight
-            print(f'Predecessor = {current_vertex}, distance from start = {current_vertex_distance_from_start}')
-            if distance_table.update(adjacent_vertex, current_vertex, adjacent_vertex_distance_from_start):
+            adjacent_distance_from_start = current_distance_from_start + weight
+            if distance_table.update(adjacent_vertex, current_vertex, adjacent_distance_from_start):
                 print(f'Distance table updated for {adjacent_vertex}')
-                item = QueueableItem(key=adjacent_vertex, priority=adjacent_vertex_distance_from_start, value=adjacent_vertex_distance_from_start)
+                item = QueueableItem(key=adjacent_vertex,
+                                     priority=adjacent_distance_from_start,
+                                     value=adjacent_distance_from_start)
                 queue.enqueue(item)
                 print(f'{adjacent_vertex} added to the queue')
 
