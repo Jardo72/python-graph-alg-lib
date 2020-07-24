@@ -24,6 +24,7 @@ supporting the above mentioned two graph implementations.
 """
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Dict, List, Tuple
 
@@ -40,6 +41,15 @@ class GraphType(Enum):
     DIRECTED = 1
 
     UNDIRECTED = 2
+
+
+@dataclass(frozen=True)
+class Edge:
+    """Immutable structure representing a single edge of a graph.
+    """
+    start: str
+    destination: str
+    weight: int
 
 
 class _VertexRegistry:

@@ -24,7 +24,7 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Dict, Sequence, Tuple
 
-from graphlib.graph import AbstractGraph, GraphType
+from graphlib.graph import AbstractGraph, Edge, GraphType
 from graphlib.util import PriorityQueue, QueueableItem
 
 
@@ -75,17 +75,6 @@ class ShortestPathSearchRequest:
     graph: AbstractGraph
     start: str
     destination: str
-
-
-@dataclass(frozen=True)
-class Edge:
-    """Immutable structure representing a single edge of a shortest path
-    search result (see :class: ShortestPathSearchResult) or a minimum
-    spanning tree (see :class: MinimumSpanningTree).
-    """
-    start: str
-    destination: str
-    weight: int
 
 
 @dataclass(frozen=True)
@@ -184,7 +173,7 @@ class _DistanceTable:
         self._entries: Dict[str, _DistanceTableEntry] = {
             starting_vertex: _DistanceTableEntry(starting_vertex, starting_vertex, 0)
         }
-        print(f'Distance table entry created for starting vertex {starting_vertex}')
+        # print(f'Distance table entry created for starting vertex {starting_vertex}')
 
     def get_distance_from_start(self, vertex: str) -> int:
         """Returns the currently known shortest distance of the given vertex from
@@ -253,13 +242,13 @@ class _DistanceTable:
                   discovered so far); False otherwise.
         """
         if vertex in self._entries:
-            print(f'Vertex {vertex} already present, going to update its entry')
+            # print(f'Vertex {vertex} already present, going to update its entry')
             result = self._entries[vertex].update(predecessor, distance)
-            print(f'Updated entry: {self._entries[vertex]}')
+            # print(f'Updated entry: {self._entries[vertex]}')
             return result
-        print(f'Vertex {vertex} not present yet, going to create a new entry')
+        # print(f'Vertex {vertex} not present yet, going to create a new entry')
         self._entries[vertex] = _DistanceTableEntry(vertex, predecessor, distance)
-        print(f'Created entry: {self._entries[vertex]}')
+        # print(f'Created entry: {self._entries[vertex]}')
         return True
 
     def backtrack_shortest_path(self,
@@ -332,28 +321,28 @@ def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _Dista
         distance_table.update(adjacent_vertex, request.start, weight)
         item = QueueableItem(key=adjacent_vertex, priority=weight, value=weight)
         queue.enqueue(item)
-        print(f'{adjacent_vertex} added to the queue')
+        # print(f'{adjacent_vertex} added to the queue')
 
     while not queue.empty():
         item = queue.dequeue()
         current_vertex = item.key
         current_distance_from_start = item.value
         explored_vertices.add(current_vertex)
-        print(f'Adding vertex {current_vertex} to explored vertices')
+        # print(f'Adding vertex {current_vertex} to explored vertices')
         for adjacent_vertex in graph.get_adjacent_vertices(current_vertex):
             if adjacent_vertex in explored_vertices:
-                print(f'Adjacent vertex {adjacent_vertex} already explored')
+                # print(f'Adjacent vertex {adjacent_vertex} already explored')
                 continue
-            print(f'Adjacent vertex {adjacent_vertex} not explored yet')
+            # print(f'Adjacent vertex {adjacent_vertex} not explored yet')
             weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
             adjacent_distance_from_start = current_distance_from_start + weight
             if distance_table.update(adjacent_vertex, current_vertex, adjacent_distance_from_start):
-                print(f'Distance table updated for {adjacent_vertex}')
+                # print(f'Distance table updated for {adjacent_vertex}')
                 item = QueueableItem(key=adjacent_vertex,
                                      priority=adjacent_distance_from_start,
                                      value=adjacent_distance_from_start)
                 queue.enqueue(item)
-                print(f'{adjacent_vertex} added to the queue')
+                # print(f'{adjacent_vertex} added to the queue')
 
     return distance_table
 
