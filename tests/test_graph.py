@@ -24,7 +24,7 @@ from abc import ABC, abstractmethod
 
 from pytest import raises
 
-from graphlib.graph import AbstractGraph, AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
+from graphlib.graph import AbstractGraph, AdjacencyMatrixGraph, AdjacencySetGraph, Edge, GraphType
 
 
 class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
@@ -48,7 +48,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
                                     (directed/undirected).
 
         Raises:
-            NotImplementedError: Always as this just an abstract method.
+            NotImplementedError: Always as this is just an abstract method.
 
         Returns:
             AbstractGraph: Derived classes are supposed to return an instance
@@ -202,6 +202,32 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         assert ('C', 'F') == graph.get_adjacent_vertices('D'), 'D'
         assert ('B', 'F') == graph.get_adjacent_vertices('E'), 'E'
         assert ('D', 'E') == graph.get_adjacent_vertices('F'), 'F'
+
+    def test_get_outgoing_edges_for_existent_vertex_returns_proper_set_of_edges(self):
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B', 2)
+        graph.add_edge('A', 'C', 3)
+        graph.add_edge('B', 'C', 5)
+        graph.add_edge('C', 'D', 4)
+
+        assert graph.get_outgoing_edges('D') == ()
+        assert graph.get_outgoing_edges('B') == (
+            Edge(start='B', destination='C', weight=5),
+        )
+        assert graph.get_outgoing_edges('A') == (
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='A', destination='C', weight=3),
+        )
+
+    def test_attempt_to_get_outgoing_edges_for_non_existent_vertex_leads_to_error(self):
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
+        graph.add_edge('C', 'D')
+
+        with raises(ValueError, match=r'Vertex with the name X not found\.'):
+            graph.get_outgoing_edges('X')
 
     def test_attempt_to_get_edge_weight_for_non_existent_start_vertex_leads_to_error(self):
         graph = self._create_graph(GraphType.DIRECTED)

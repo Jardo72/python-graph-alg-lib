@@ -26,7 +26,7 @@ supporting the above mentioned two graph implementations.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum, unique
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 
 def _create_matrix(size: int, default_value: int = 0) -> List[List[int]]:
@@ -216,7 +216,7 @@ class AbstractGraph(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_adjacent_vertices(self, vertex: str):
+    def get_adjacent_vertices(self, vertex: str) -> Tuple[str, ...]:
         """Creates and returns a new tuple containing the names of vertices
         adjacent to the vertex with the given name.
 
@@ -234,6 +234,30 @@ class AbstractGraph(ABC):
                              names of vertices adjacent to the given vertex.
         """
         raise NotImplementedError
+
+    def get_outgoing_edges(self, vertex: str) -> Tuple[Edge, ...]:
+        """ Creates and returns a new tuple containing all edges outgoing from the
+        given vertex.
+
+        This is a fully functional implementation of this method which is not
+        supposed to be overridden by subclasses of this class.
+
+        Args:
+            vertex (str): The start vertex of the desired edges.
+
+        Raises:
+            ValueError: If this graph does not involve a vertex with the given
+                        name.
+
+        Returns:
+            Tuple[Edge, ...]: New tuple containing the edges outgoing from the
+                              given vertex.
+        """
+        result = []
+        for adjacent_vertex in self.get_adjacent_vertices(vertex):
+            weight = self.get_edge_weight(vertex, adjacent_vertex)
+            result.append(Edge(vertex, adjacent_vertex, weight))
+        return tuple(result)
 
     @abstractmethod
     def add_edge(self, vertex_one: str, vertex_two: str, weight: int = 1):
@@ -320,7 +344,7 @@ class AdjacencyMatrixGraph(AbstractGraph):
         super().__init__(graph_type)
         self._matrix = _create_matrix(vertex_count)
         self._registry = _VertexRegistry()
-        self._weights = set()
+        self._weights: Set[int] = set()
 
     @property
     def is_weighted(self) -> bool:
@@ -377,7 +401,7 @@ class AdjacencyMatrixGraph(AbstractGraph):
         """
         return self._registry.get_sorted_names()
 
-    def get_adjacent_vertices(self, vertex: str):
+    def get_adjacent_vertices(self, vertex: str) -> Tuple[str, ...]:
         """Creates and returns a new tuple containing the names of vertices
         adjacent to the vertex with the given name.
 
@@ -528,7 +552,7 @@ class AdjacencySetGraph(AbstractGraph):
     def __init__(self, graph_type: GraphType):
         super().__init__(graph_type)
         self._adjacency_sets: Dict[str, _AdjacencySet] = {}
-        self._weights = set()
+        self._weights: Set[int] = set()
 
     @property
     def is_weighted(self) -> bool:
@@ -603,7 +627,7 @@ class AdjacencySetGraph(AbstractGraph):
                              adjacent to the given vertex.
         """
         if not vertex in self._adjacency_sets:
-            message = f'Vertex with the name {vertex} not found in the registry.'
+            message = f'Vertex with the name {vertex} not found.'
             raise ValueError(message)
         return self._adjacency_sets[vertex].get_adjacent_vertices()
 

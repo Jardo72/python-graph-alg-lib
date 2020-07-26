@@ -22,10 +22,10 @@
 
 from pytest import mark, raises
 
-from graphlib.algorithms import Edge, MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
+from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
 from graphlib.algorithms import find_shortest_path, sort_topologically
 from graphlib.algorithms import _DistanceTable
-from graphlib.graph import AdjacencySetGraph, GraphType
+from graphlib.graph import AdjacencySetGraph, Edge, GraphType
 
 
 class TestDistanceTable: # pylint: disable=R0201,C0116
