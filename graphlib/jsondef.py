@@ -20,7 +20,7 @@
 """This module allows to read graph definitions from JSON files.
 """
 
-from json import load
+from json import load, loads
 from typing import Any, Dict, Sequence, Tuple
 
 from graphlib.graph import AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
@@ -28,15 +28,27 @@ from graphlib.graph import AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
 
 def _read_graph_type(json_data: Dict[str, Any]) -> GraphType:
     # TODO: error handling is missing
+    if 'graphType' not in json_data:
+        raise ValueError('Undefined graph type.')
     graph_type_as_string = json_data['graphType']
-    return GraphType[graph_type_as_string]
+    try:
+        return GraphType[graph_type_as_string]
+    except KeyError:
+        raise ValueError(f'Invalid graph type: {graph_type_as_string}.')
 
 
 def _read_single_edge(json_data: Dict[str, Any]) -> Tuple[str, str, int]:
     # TODO: error handling is missing
+    if 'start' not in json_data:
+        raise ValueError('Edge with undefined start vertex.')
+    if 'destination' not in json_data:
+        raise ValueError('Edge with undefined destination vertex.')
     start = json_data['start']
     destination = json_data['destination']
-    weight = int(json_data['weight'])
+    if 'weight' not in json_data:
+        weight = 1
+    else:
+        weight = int(json_data['weight'])
     return (start, destination, weight)
 
 
@@ -44,32 +56,47 @@ def _read_edge_list(json_data: Dict[str, Any]) -> Sequence[Tuple[str, str, int]]
     return [_read_single_edge(single_edge) for single_edge in json_data['edges']]
 
 
-def build_adjacency_set_graph(path: str) -> AdjacencySetGraph:
-    """Creates and returns a new adjacency set graph created according to the given
-    JSON definition.
+def build_adjacency_set_graph_from_json_string(json_string: str) -> AdjacencySetGraph:
+    """Creates and returns a new adjacency set graph created according to the
+    JSON definition represented by the given string.
 
     Args:
-        path (str): [description]
+        json_string (str): String carrying the JSON definition of the graph to be
+                           built.
+
+    Returns:
+        AdjacencySetGraph: The created graph.
+    """
+    json_data = loads(json_string)
+    graph_type = _read_graph_type(json_data)
+    graph = AdjacencySetGraph(graph_type)
+    for start, destination, weight in _read_edge_list(json_data):
+        graph.add_edge(start, destination, weight)
+    return graph
+
+def build_adjacency_set_graph_from_json_file(path: str) -> AdjacencySetGraph:
+    """Creates and returns a new adjacency set graph created according to the
+    JSON definition contained in the given file.
+
+    Args:
+        path (str): Path to the JSON file containing the graph definition to be
+                    read.
 
     Returns:
         AdjacencySetGraph: The created graph.
     """
     with open(path, 'r') as json_file:
-        json_data = load(json_file)
-        graph_type = _read_graph_type(json_data)
-        graph = AdjacencySetGraph(graph_type)
-        for start, destination, weight in _read_edge_list(json_data):
-            graph.add_edge(start, destination, weight)
-        return graph
+        json_data = "".join(line.rstrip() for line in json_file)
+        return build_adjacency_set_graph_from_json_string(json_data)
 
 
-def build_adjacency_matrix_graph(path: str) -> AdjacencyMatrixGraph:
+def build_adjacency_matrix_graph_from_json_file(path: str) -> AdjacencyMatrixGraph:
     """Creates and returns a new adjacency set graph created according to the given
-    JSON definition.
+    JSON definition contained in the given file.
 
     Args:
-        path (str): [description]
-
+        path (str): Path to the JSON file containing the graph definition to be
+                    read.
     Returns:
         AdjacencyMatrixGraph: The created graph.
     """
