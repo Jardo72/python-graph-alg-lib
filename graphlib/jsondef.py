@@ -20,14 +20,13 @@
 """This module allows to read graph definitions from JSON files.
 """
 
-from json import load, loads
+from json import loads
 from typing import Any, Dict, Sequence, Tuple
 
 from graphlib.graph import AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
 
 
 def _read_graph_type(json_data: Dict[str, Any]) -> GraphType:
-    # TODO: error handling is missing
     if 'graphType' not in json_data:
         raise ValueError('Undefined graph type.')
     graph_type_as_string = json_data['graphType']
@@ -38,7 +37,6 @@ def _read_graph_type(json_data: Dict[str, Any]) -> GraphType:
 
 
 def _read_single_edge(json_data: Dict[str, Any]) -> Tuple[str, str, int]:
-    # TODO: error handling is missing
     if 'start' not in json_data:
         raise ValueError('Edge with undefined start vertex.')
     if 'destination' not in json_data:
@@ -48,12 +46,20 @@ def _read_single_edge(json_data: Dict[str, Any]) -> Tuple[str, str, int]:
     if 'weight' not in json_data:
         weight = 1
     else:
-        weight = int(json_data['weight'])
+        try:
+            weight = int(json_data['weight'])
+        except ValueError:
+            raise ValueError(f'Invalid weight: {json_data["weight"]}.')
     return (start, destination, weight)
 
 
 def _read_edge_list(json_data: Dict[str, Any]) -> Sequence[Tuple[str, str, int]]:
-    return [_read_single_edge(single_edge) for single_edge in json_data['edges']]
+    if 'edges' not in json_data:
+        raise ValueError(f'Missing edge list.')
+    result = [_read_single_edge(single_edge) for single_edge in json_data['edges']]
+    if len(result) == 0:
+        raise ValueError('Empty edge list.')
+    return result
 
 
 def build_adjacency_set_graph_from_json_string(json_string: str) -> AdjacencySetGraph:
@@ -90,8 +96,28 @@ def build_adjacency_set_graph_from_json_file(path: str) -> AdjacencySetGraph:
         return build_adjacency_set_graph_from_json_string(json_data)
 
 
+def build_adjacency_matrix_graph_from_json_string(json_string: str) -> AdjacencyMatrixGraph:
+    """Creates and returns a new adjacency matrix graph created according to the
+    JSON definition represented by the given string.
+
+    Args:
+        json_string (str): String carrying the JSON definition of the graph to be
+                           built.
+
+    Returns:
+        AdjacencyMatrixGraph: The created graph.
+    """
+    json_data = loads(json_string)
+    graph_type = _read_graph_type(json_data)
+    edge_list = _read_edge_list(json_data)
+    max_vertex_count = 2 * len(edge_list)
+    graph = AdjacencyMatrixGraph(max_vertex_count, graph_type)
+    for start, destination, weight in edge_list:
+        graph.add_edge(start, destination, weight)
+    return graph
+
 def build_adjacency_matrix_graph_from_json_file(path: str) -> AdjacencyMatrixGraph:
-    """Creates and returns a new adjacency set graph created according to the given
+    """Creates and returns a new adjacency matrix graph created according to the given
     JSON definition contained in the given file.
 
     Args:
@@ -101,11 +127,5 @@ def build_adjacency_matrix_graph_from_json_file(path: str) -> AdjacencyMatrixGra
         AdjacencyMatrixGraph: The created graph.
     """
     with open(path, 'r') as json_file:
-        json_data = load(json_file)
-        graph_type = _read_graph_type(json_data)
-        # TODO:
-        # - the hardcoded vertex count should be improved
-        graph = AdjacencyMatrixGraph(100, graph_type)
-        for start, destination, weight in _read_edge_list(json_data):
-            graph.add_edge(start, destination, weight)
-        return graph
+        json_data = "".join(line.rstrip() for line in json_file)
+        return build_adjacency_matrix_graph_from_json_string(json_data)

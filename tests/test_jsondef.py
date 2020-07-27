@@ -36,23 +36,23 @@ class TestGraphBuilding:
         {
             "start": "A",
             "destination": "B",
-            "weight": "3"
+            "weight": 3
         }, {
             "start": "A",
             "destination": "C",
-            "weight": "5"
+            "weight": 5
         }, {
             "start": "B",
             "destination": "D",
-            "weight": "4"
+            "weight": 4
         }, {
             "start": "C",
             "destination": "D",
-            "weight": "2"
+            "weight": 2
         }, {
             "start": "D",
             "destination": "E",
-            "weight": "6"
+            "weight": 6
         }
     ]
 }
@@ -66,23 +66,23 @@ class TestGraphBuilding:
         {
             "start": "A",
             "destination": "B",
-            "weight": "3"
+            "weight": 3
         }, {
             "start": "A",
             "destination": "C",
-            "weight": "5"
+            "weight": 5
         }, {
             "start": "B",
             "destination": "D",
-            "weight": "4"
+            "weight": 4
         }, {
             "start": "C",
             "destination": "D",
-            "weight": "2"
+            "weight": 2
         }, {
             "start": "D",
             "destination": "E",
-            "weight": "6"
+            "weight": 6
         }
     ]
 }
@@ -111,7 +111,7 @@ class TestGraphBuilding:
         }
     ]
 }
-        """
+"""
 
     def _undirected_unweighted_graph_json_definition(self):
         return """
@@ -136,7 +136,7 @@ class TestGraphBuilding:
         }
     ]
 }
-        """
+"""
 
     def _missing_graph_type_json_definition(self):
         return """
@@ -145,15 +145,15 @@ class TestGraphBuilding:
         {
             "start": "A",
             "destination": "B",
-            "weight": "3"
+            "weight": 3
         }, {
             "start": "B",
             "destination": "C",
-            "weight": "4"
+            "weight": 4
         }
     ]
 }
-        """
+"""
 
     def _invalid_graph_type_json_definition(self):
         return """
@@ -163,15 +163,82 @@ class TestGraphBuilding:
         {
             "start": "A",
             "destination": "B",
-            "weight": "3"
+            "weight": 3
         }, {
             "start": "B",
             "destination": "C",
-            "weight": "4"
+            "weight": 4
         }
     ]
 }
-        """
+"""
+
+    def _missing_edge_list_json_definition(self):
+        return """
+{
+    "graphType": "DIRECTED",
+}
+"""
+
+    def _empty_edge_list_json_definition(self):
+        return """
+{
+    "graphType": "DIRECTED",
+    "edges": []
+}
+"""
+
+    def _missing_start_vertex_json_definition(self):
+        return """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "B",
+            "destination": "C",
+            "weight": 4
+        }
+    ]
+}
+"""
+
+    def _missing_destination_vertex_json_definition(self):
+        return """
+{
+    "graphType": "DUMB",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "B",
+            "weight": 4
+        }
+    ]
+}
+"""
+
+    def _invalid_edge_weight_json_definition(self):
+        return """
+{
+    "graphType": "DUMB",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": "X"
+        }, {
+            "start": "B",
+            "destination": "C",
+            "weight": 4
+        }
+    ]
+}
+"""
 
     def test_directed_weighted_graph_is_parsed_properly(self):
         json_string = self._directed_weighted_graph_json_definition()
@@ -226,7 +293,9 @@ class TestGraphBuilding:
     # TODO:
     # - missing graph type
     # - invalid graph type
-    # - missing edge weight (default 1)
-    # - invalid edge weight
+    # - missing edge list
+    # - empty edge list
     # - missing start vertex
     # - missing destination vertex
+    # - missing edge weight (default 1)
+    # - invalid edge weight
