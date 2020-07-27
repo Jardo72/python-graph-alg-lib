@@ -20,158 +20,23 @@
 """Unit tests for the graphlib.jsondef module.
 """
 
-from graphlib.graph import AdjacencySetGraph
+from abc import ABC, abstractproperty
 
-from pytest import raises
+from pytest import mark, raises
 
+from graphlib.graph import AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
+from graphlib.jsondef import build_adjacency_matrix_graph_from_json_string
 from graphlib.jsondef import build_adjacency_set_graph_from_json_string
 
-class TestGraphBuilding:
+class AbstractGraphBuildingTestFixture(ABC):
 
-    def _directed_weighted_graph_json_definition(self):
-        return """
-{
-    "graphType": "DIRECTED",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B",
-            "weight": 3
-        }, {
-            "start": "A",
-            "destination": "C",
-            "weight": 5
-        }, {
-            "start": "B",
-            "destination": "D",
-            "weight": 4
-        }, {
-            "start": "C",
-            "destination": "D",
-            "weight": 2
-        }, {
-            "start": "D",
-            "destination": "E",
-            "weight": 6
-        }
-    ]
-}
-"""
+    @abstractproperty
+    def tested_function(self):
+        raise NotImplementedError
 
-    def _undirected_weighted_graph_json_definition(self):
-        return """
-{
-    "graphType": "UNDIRECTED",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B",
-            "weight": 3
-        }, {
-            "start": "A",
-            "destination": "C",
-            "weight": 5
-        }, {
-            "start": "B",
-            "destination": "D",
-            "weight": 4
-        }, {
-            "start": "C",
-            "destination": "D",
-            "weight": 2
-        }, {
-            "start": "D",
-            "destination": "E",
-            "weight": 6
-        }
-    ]
-}
-"""
-
-    def _directed_unweighted_graph_json_definition(self):
-        return """
-{
-    "graphType": "DIRECTED",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B"
-        }, {
-            "start": "A",
-            "destination": "C"
-        }, {
-            "start": "B",
-            "destination": "D"
-        }, {
-            "start": "C",
-            "destination": "D"
-        }, {
-            "start": "D",
-            "destination": "E"
-        }
-    ]
-}
-"""
-
-    def _undirected_unweighted_graph_json_definition(self):
-        return """
-{
-    "graphType": "UNDIRECTED",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B"
-        }, {
-            "start": "A",
-            "destination": "C"
-        }, {
-            "start": "B",
-            "destination": "D"
-        }, {
-            "start": "C",
-            "destination": "D"
-        }, {
-            "start": "D",
-            "destination": "E"
-        }
-    ]
-}
-"""
-
-    def _missing_graph_type_json_definition(self):
-        return """
-{
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B",
-            "weight": 3
-        }, {
-            "start": "B",
-            "destination": "C",
-            "weight": 4
-        }
-    ]
-}
-"""
-
-    def _invalid_graph_type_json_definition(self):
-        return """
-{
-    "graphType": "DUMB",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B",
-            "weight": 3
-        }, {
-            "start": "B",
-            "destination": "C",
-            "weight": 4
-        }
-    ]
-}
-"""
+    @abstractproperty
+    def expected_graph_class(self):
+        raise NotImplementedError
 
     def _missing_edge_list_json_definition(self):
         return """
@@ -240,11 +105,39 @@ class TestGraphBuilding:
 }
 """
 
-    def test_directed_weighted_graph_is_parsed_properly(self):
-        json_string = self._directed_weighted_graph_json_definition()
-        graph = build_adjacency_set_graph_from_json_string(json_string)
+    def test_directed_weighted_graph_is_built_properly_from_valid_definition(self):
+        json_string = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "A",
+            "destination": "C",
+            "weight": 5
+        }, {
+            "start": "B",
+            "destination": "D",
+            "weight": 4
+        }, {
+            "start": "C",
+            "destination": "D",
+            "weight": 2
+        }, {
+            "start": "D",
+            "destination": "E",
+            "weight": 6
+        }
+    ]
+}
+"""
+        graph = self.tested_function(json_string)
 
-        assert isinstance(graph, AdjacencySetGraph)
+        assert isinstance(graph, self.expected_graph_class)
+        assert graph.graph_type == GraphType.DIRECTED
         assert graph.get_edge_weight('A', 'B') == 3
         assert graph.get_edge_weight('A', 'C') == 5
         assert graph.get_edge_weight('B', 'D') == 4
@@ -255,11 +148,39 @@ class TestGraphBuilding:
             with raises(ValueError):
                 graph.get_edge_weight(start, destination)
 
-    def test_undirected_weighted_graph_is_parsed_properly(self):
-        json_string = self._undirected_weighted_graph_json_definition()
-        graph = build_adjacency_set_graph_from_json_string(json_string)
+    def test_undirected_weighted_graph_is_built_properly_from_valid_definition(self):
+        json_string = """
+{
+    "graphType": "UNDIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "A",
+            "destination": "C",
+            "weight": 5
+        }, {
+            "start": "B",
+            "destination": "D",
+            "weight": 4
+        }, {
+            "start": "C",
+            "destination": "D",
+            "weight": 2
+        }, {
+            "start": "D",
+            "destination": "E",
+            "weight": 6
+        }
+    ]
+}
+"""
+        graph = self.tested_function(json_string)
 
-        assert isinstance(graph, AdjacencySetGraph)
+        assert isinstance(graph, self.expected_graph_class)
+        assert graph.graph_type == GraphType.UNDIRECTED
         assert graph.get_edge_weight('A', 'B') == 3
         assert graph.get_edge_weight('B', 'A') == 3
         assert graph.get_edge_weight('A', 'C') == 5
@@ -271,24 +192,111 @@ class TestGraphBuilding:
         assert graph.get_edge_weight('D', 'E') == 6
         assert graph.get_edge_weight('E', 'D') == 6
 
-    def test_directed_unweighted_graph_is_parsed_properly(self):
-        json_string = self._directed_unweighted_graph_json_definition()
-        graph = build_adjacency_set_graph_from_json_string(json_string)
+    def test_directed_unweighted_graph_is_parsed_properly_from_valid_definition(self):
+        json_string = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B"
+        }, {
+            "start": "A",
+            "destination": "C"
+        }, {
+            "start": "B",
+            "destination": "D"
+        }, {
+            "start": "C",
+            "destination": "D"
+        }, {
+            "start": "D",
+            "destination": "E"
+        }
+    ]
+}
+"""
+        graph = self.tested_function(json_string)
 
-        assert isinstance(graph, AdjacencySetGraph)
+        assert isinstance(graph, self.expected_graph_class)
+        assert graph.graph_type == GraphType.DIRECTED
         for start, destination in ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('D', 'E'):
             assert graph.get_edge_weight(start, destination) == 1
             with raises(ValueError):
                 graph.get_edge_weight(destination, start)
 
-    def test_undirected_unweighted_graph_is_parsed_properly(self):
-        json_string = self._undirected_unweighted_graph_json_definition()
-        graph = build_adjacency_set_graph_from_json_string(json_string)
+    def test_undirected_unweighted_graph_is_parsed_properly_from_valid_definition(self):
+        json_string = """
+{
+    "graphType": "UNDIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B"
+        }, {
+            "start": "A",
+            "destination": "C"
+        }, {
+            "start": "B",
+            "destination": "D"
+        }, {
+            "start": "C",
+            "destination": "D"
+        }, {
+            "start": "D",
+            "destination": "E"
+        }
+    ]
+}
+"""
+        graph = self.tested_function(json_string)
 
-        assert isinstance(graph, AdjacencySetGraph)
+        assert isinstance(graph, self.expected_graph_class)
+        assert graph.graph_type == GraphType.UNDIRECTED
         for vertex_one, vertex_two in ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('D', 'E'):
             assert graph.get_edge_weight(vertex_one, vertex_two) == 1
             assert graph.get_edge_weight(vertex_two, vertex_one) == 1
+
+    def test_json_definition_without_graph_type_leads_to_error(self):
+        json_data = """
+{
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "B",
+            "destination": "C",
+            "weight": 4
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Undefined graph type.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_invalid_graph_type_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DUMB",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "B",
+            "destination": "C",
+            "weight": 4
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Invalid graph type: DUMB.'):
+            self.tested_function(json_data)
 
     # TODO:
     # - missing graph type
@@ -299,3 +307,26 @@ class TestGraphBuilding:
     # - missing destination vertex
     # - missing edge weight (default 1)
     # - invalid edge weight
+
+
+class TestAdjacencySetGraphBuilding(AbstractGraphBuildingTestFixture):
+
+    @property
+    def tested_function(self):
+        return build_adjacency_set_graph_from_json_string
+
+    @property
+    def expected_graph_class(self):
+        return AdjacencySetGraph
+
+
+class TestAdjacencyMatrixGraphBuilding(AbstractGraphBuildingTestFixture):
+
+    @property
+    def tested_function(self):
+        return build_adjacency_matrix_graph_from_json_string
+
+    @property
+    def expected_graph_class(self):
+        return AdjacencyMatrixGraph
+

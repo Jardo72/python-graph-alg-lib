@@ -55,7 +55,7 @@ def _read_single_edge(json_data: Dict[str, Any]) -> Tuple[str, str, int]:
 
 def _read_edge_list(json_data: Dict[str, Any]) -> Sequence[Tuple[str, str, int]]:
     if 'edges' not in json_data:
-        raise ValueError(f'Missing edge list.')
+        raise ValueError('Missing edge list.')
     result = [_read_single_edge(single_edge) for single_edge in json_data['edges']]
     if len(result) == 0:
         raise ValueError('Empty edge list.')

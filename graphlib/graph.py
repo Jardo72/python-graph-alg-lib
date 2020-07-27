@@ -23,7 +23,7 @@ a graph implementation. The module also involves some internal classes
 supporting the above mentioned two graph implementations.
 """
 
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Dict, List, Set, Tuple
@@ -157,8 +157,7 @@ class AbstractGraph(ABC):
         """
         return self._graph_type
 
-    @property
-    @abstractmethod
+    @abstractproperty
     def is_weighted(self) -> bool:
         """Verifies whether this graph is weighted or unweighted.
 
@@ -178,8 +177,7 @@ class AbstractGraph(ABC):
         """
         raise NotImplementedError
 
-    @property
-    @abstractmethod
+    @abstractproperty
     def vertex_count(self) -> int:
         """Returns the number of vertices involved in the graph represented
         byt this object.
