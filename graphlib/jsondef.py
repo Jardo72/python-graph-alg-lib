@@ -48,6 +48,8 @@ def _read_single_edge(json_data: Dict[str, Any]) -> Tuple[str, str, int]:
     else:
         try:
             weight = int(json_data['weight'])
+            if weight <= 0:
+                raise ValueError()
         except ValueError:
             raise ValueError(f'Invalid weight: {json_data["weight"]}.')
     return (start, destination, weight)

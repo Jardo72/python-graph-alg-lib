@@ -22,7 +22,7 @@
 
 from abc import ABC, abstractproperty
 
-from pytest import mark, raises
+from pytest import raises
 
 from graphlib.graph import AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
 from graphlib.jsondef import build_adjacency_matrix_graph_from_json_string
@@ -37,73 +37,6 @@ class AbstractGraphBuildingTestFixture(ABC):
     @abstractproperty
     def expected_graph_class(self):
         raise NotImplementedError
-
-    def _missing_edge_list_json_definition(self):
-        return """
-{
-    "graphType": "DIRECTED",
-}
-"""
-
-    def _empty_edge_list_json_definition(self):
-        return """
-{
-    "graphType": "DIRECTED",
-    "edges": []
-}
-"""
-
-    def _missing_start_vertex_json_definition(self):
-        return """
-{
-    "graphType": "DIRECTED",
-    "edges": [
-        {
-            "destination": "B",
-            "weight": 3
-        }, {
-            "start": "B",
-            "destination": "C",
-            "weight": 4
-        }
-    ]
-}
-"""
-
-    def _missing_destination_vertex_json_definition(self):
-        return """
-{
-    "graphType": "DUMB",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B",
-            "weight": 3
-        }, {
-            "start": "B",
-            "weight": 4
-        }
-    ]
-}
-"""
-
-    def _invalid_edge_weight_json_definition(self):
-        return """
-{
-    "graphType": "DUMB",
-    "edges": [
-        {
-            "start": "A",
-            "destination": "B",
-            "weight": "X"
-        }, {
-            "start": "B",
-            "destination": "C",
-            "weight": 4
-        }
-    ]
-}
-"""
 
     def test_directed_weighted_graph_is_built_properly_from_valid_definition(self):
         json_string = """
@@ -298,15 +231,117 @@ class AbstractGraphBuildingTestFixture(ABC):
         with raises(ValueError, match='Invalid graph type: DUMB.'):
             self.tested_function(json_data)
 
-    # TODO:
-    # - missing graph type
-    # - invalid graph type
-    # - missing edge list
-    # - empty edge list
-    # - missing start vertex
-    # - missing destination vertex
-    # - missing edge weight (default 1)
-    # - invalid edge weight
+    def test_json_definition_without_edge_list_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED"
+}
+"""
+
+        with raises(ValueError, match='Missing edge list.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_empty_edge_list_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED",
+    "edges": []
+}
+"""
+
+        with raises(ValueError, match='Empty edge list.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_missing_start_vertex_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "B",
+            "destination": "C",
+            "weight": 4
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Edge with undefined start vertex.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_missing_destination_vertex_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 3
+        }, {
+            "start": "B",
+            "weight": 4
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Edge with undefined destination vertex.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_invalid_edge_weight_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": "X"
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Invalid weight: X.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_negative_edge_weight_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": -1
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Invalid weight: -1.'):
+            self.tested_function(json_data)
+
+    def test_json_definition_with_edge_weight_equal_to_zero_leads_to_error(self):
+        json_data = """
+{
+    "graphType": "DIRECTED",
+    "edges": [
+        {
+            "start": "A",
+            "destination": "B",
+            "weight": 0
+        }
+    ]
+}
+"""
+
+        with raises(ValueError, match='Invalid weight: 0.'):
+            self.tested_function(json_data)
 
 
 class TestAdjacencySetGraphBuilding(AbstractGraphBuildingTestFixture):

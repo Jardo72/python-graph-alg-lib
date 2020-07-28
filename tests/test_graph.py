@@ -226,7 +226,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
 
-        with raises(ValueError, match=r'Vertex with the name X not found\.'):
+        with raises(ValueError, match='Vertex with the name X not found.'):
             graph.get_outgoing_edges('X')
 
     def test_attempt_to_get_edge_weight_for_non_existent_start_vertex_leads_to_error(self):
@@ -236,7 +236,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
 
-        with raises(ValueError, match=r'Vertex with the name X not found\.'):
+        with raises(ValueError, match='Vertex with the name X not found.'):
             graph.get_edge_weight('X', 'B')
 
     def test_attempt_to_get_edge_weight_for_non_existent_destination_vertex_leads_to_error(self):
@@ -246,7 +246,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
 
-        with raises(ValueError, match=r'Vertex with the name X not found\.'):
+        with raises(ValueError, match='Vertex with the name X not found.'):
             graph.get_edge_weight('B', 'X')
 
     def test_attempt_to_get_edge_weight_for_non_existent_edge_leads_to_error(self):
@@ -256,7 +256,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
 
-        with raises(ValueError, match=r'There is no edge from B to A\.'):
+        with raises(ValueError, match='There is no edge from B to A.'):
             graph.get_edge_weight('B', 'A')
 
 
