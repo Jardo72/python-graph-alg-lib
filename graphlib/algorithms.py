@@ -242,16 +242,21 @@ class _DistanceTable:
                   discovered so far); False otherwise.
         """
         if vertex in self._entries:
-            # print(f'Vertex {vertex} already present, going to update its entry')
             result = self._entries[vertex].update(predecessor, distance)
-            # print(f'Updated entry: {self._entries[vertex]}')
             return result
-        # print(f'Vertex {vertex} not present yet, going to create a new entry')
         self._entries[vertex] = _DistanceTableEntry(vertex, predecessor, distance)
-        # print(f'Created entry: {self._entries[vertex]}')
         return True
 
     def backtrack_shortest_path(self, destination: str) -> ShortestPathSearchResult:
+        """Backtracks the shortest path from the starting vertex this distance table
+        has been initialized with, to the given destination vertex.
+
+        Args:
+            destination (str): The destination vertex of the path to be backtracked.
+
+        Returns:
+            ShortestPathSearchResult: The result of the backtracking.
+        """
         path = deque()
         predecessor: str = self._entries[destination].predecessor
         destination_distance = self._entries[destination].distance_from_start
