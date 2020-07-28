@@ -351,6 +351,10 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
     """Finds and returns the shortest path from the given start vertex to the
     specified destination vertex in the given graph.
 
+    This method can be used for unweighted as well as for weighted graphs. Depending
+    on whether the given graph is unweighted or weighted, an appropriate algorithm is
+    used.
+
     Args:
         request (ShortestPathSearchRequest): Search request carrying the start
                                              and destination vertices as well
@@ -359,7 +363,8 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
 
     Returns:
         ShortestPathSearchResult: The search result (i.e. the found shortest
-                                  path).
+                                  path from the start to the destination specified
+                                  by the given search request).
     """
     if request.graph.is_weighted:
         distance_table = _build_weighted_distance_table(request)

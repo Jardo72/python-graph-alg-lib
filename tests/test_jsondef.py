@@ -29,13 +29,21 @@ from graphlib.jsondef import build_adjacency_matrix_graph_from_json_string
 from graphlib.jsondef import build_adjacency_set_graph_from_json_string
 
 class AbstractGraphBuildingTestFixture(ABC):
+    """Abstract test-fixture class that implements test methods common to methods
+    building a graph according to JSON definition.
+
+    This class is supposed to be used as base class for test fixtures for specific
+    graph-building methods, i.e.:
+    * :method: graphlib.jsondef.build_adjacency_matrix_graph_from_json_string
+    * :method: graphlib.jsondef.build_adjacency_set_graph_from_json_string
+    """
 
     @abstractproperty
-    def tested_function(self):
+    def _tested_function(self):
         raise NotImplementedError
 
     @abstractproperty
-    def expected_graph_class(self):
+    def _expected_graph_class(self):
         raise NotImplementedError
 
     def test_directed_weighted_graph_is_built_properly_from_valid_definition(self):
@@ -67,9 +75,9 @@ class AbstractGraphBuildingTestFixture(ABC):
     ]
 }
 """
-        graph = self.tested_function(json_string)
+        graph = self._tested_function(json_string)
 
-        assert isinstance(graph, self.expected_graph_class)
+        assert isinstance(graph, self._expected_graph_class)
         assert graph.graph_type == GraphType.DIRECTED
         assert graph.get_edge_weight('A', 'B') == 3
         assert graph.get_edge_weight('A', 'C') == 5
@@ -110,9 +118,9 @@ class AbstractGraphBuildingTestFixture(ABC):
     ]
 }
 """
-        graph = self.tested_function(json_string)
+        graph = self._tested_function(json_string)
 
-        assert isinstance(graph, self.expected_graph_class)
+        assert isinstance(graph, self._expected_graph_class)
         assert graph.graph_type == GraphType.UNDIRECTED
         assert graph.get_edge_weight('A', 'B') == 3
         assert graph.get_edge_weight('B', 'A') == 3
@@ -149,9 +157,9 @@ class AbstractGraphBuildingTestFixture(ABC):
     ]
 }
 """
-        graph = self.tested_function(json_string)
+        graph = self._tested_function(json_string)
 
-        assert isinstance(graph, self.expected_graph_class)
+        assert isinstance(graph, self._expected_graph_class)
         assert graph.graph_type == GraphType.DIRECTED
         for start, destination in ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('D', 'E'):
             assert graph.get_edge_weight(start, destination) == 1
@@ -182,9 +190,9 @@ class AbstractGraphBuildingTestFixture(ABC):
     ]
 }
 """
-        graph = self.tested_function(json_string)
+        graph = self._tested_function(json_string)
 
-        assert isinstance(graph, self.expected_graph_class)
+        assert isinstance(graph, self._expected_graph_class)
         assert graph.graph_type == GraphType.UNDIRECTED
         for vertex_one, vertex_two in ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('D', 'E'):
             assert graph.get_edge_weight(vertex_one, vertex_two) == 1
@@ -208,7 +216,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Undefined graph type.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_invalid_graph_type_leads_to_error(self):
         json_data = """
@@ -229,7 +237,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Invalid graph type: DUMB.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_without_edge_list_leads_to_error(self):
         json_data = """
@@ -239,7 +247,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Missing edge list.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_empty_edge_list_leads_to_error(self):
         json_data = """
@@ -250,7 +258,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Empty edge list.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_missing_start_vertex_leads_to_error(self):
         json_data = """
@@ -270,7 +278,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Edge with undefined start vertex.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_missing_destination_vertex_leads_to_error(self):
         json_data = """
@@ -290,7 +298,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Edge with undefined destination vertex.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_invalid_edge_weight_leads_to_error(self):
         json_data = """
@@ -307,7 +315,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Invalid weight: X.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_negative_edge_weight_leads_to_error(self):
         json_data = """
@@ -324,7 +332,7 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Invalid weight: -1.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
     def test_json_definition_with_edge_weight_equal_to_zero_leads_to_error(self):
         json_data = """
@@ -341,27 +349,33 @@ class AbstractGraphBuildingTestFixture(ABC):
 """
 
         with raises(ValueError, match='Invalid weight: 0.'):
-            self.tested_function(json_data)
+            self._tested_function(json_data)
 
 
 class TestAdjacencySetGraphBuilding(AbstractGraphBuildingTestFixture):
+    """Concrete test-fixture for the method :method:
+    graphlib.jsondef.build_adjacency_set_graph_from_json_string.
+    """
 
     @property
-    def tested_function(self):
+    def _tested_function(self):
         return build_adjacency_set_graph_from_json_string
 
     @property
-    def expected_graph_class(self):
+    def _expected_graph_class(self):
         return AdjacencySetGraph
 
 
 class TestAdjacencyMatrixGraphBuilding(AbstractGraphBuildingTestFixture):
+    """Concrete test-fixture for the method :method:
+    graphlib.jsondef.build_adjacency_matrix_graph_from_json_string.
+    """
 
     @property
-    def tested_function(self):
+    def _tested_function(self):
         return build_adjacency_matrix_graph_from_json_string
 
     @property
-    def expected_graph_class(self):
+    def _expected_graph_class(self):
         return AdjacencyMatrixGraph
 
