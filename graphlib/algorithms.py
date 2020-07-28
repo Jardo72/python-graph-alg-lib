@@ -375,3 +375,26 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
     else:
         distance_table = _build_unweighted_distance_table(request)
     return distance_table.backtrack_shortest_path(request.destination)
+
+
+def find_minimum_spanning_tree(graph: AbstractGraph, start: str) -> MinimumSpanningTree:
+    distance_table = _DistanceTable(start)
+    explored_vertices = {start}
+    queue = PriorityQueue()
+    result = set()
+
+    for adjacent_vertex in graph.get_adjacent_vertices(start):
+        weight = graph.get_edge_weight(start, adjacent_vertex)
+        distance_table.update(adjacent_vertex, start, weight)
+        item = QueueableItem(adjacent_vertex, weight, None)
+        queue.enqueue(item)
+
+    while not queue.empty():
+        item = queue.dequeue()
+        current_vertex = item.key
+        if current_vertex in explored_vertices:
+            continue
+        explored_vertices.add(current_vertex)
+        pass
+
+    return MinimumSpanningTree(start, tuple(result))

@@ -98,14 +98,14 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         distance_table = _DistanceTable('A')
         distance_table.update('B', 'A', 4)
 
-        with raises(ValueError, match=r'No distance table entry found for the vertex X\.'):
+        with raises(ValueError, match='No distance table entry found for the vertex X.'):
             distance_table.get_distance_from_start('X')
 
     def test_attempt_to_get_predecessor_for_non_existent_vertex_leads_to_error(self):
         distance_table = _DistanceTable('A')
         distance_table.update('B', 'A', 4)
 
-        with raises(ValueError, match=r'No distance table entry found for the vertex Y\.'):
+        with raises(ValueError, match='No distance table entry found for the vertex Y.'):
             distance_table.get_predecessor('Y')
 
 

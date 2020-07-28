@@ -102,6 +102,10 @@ def build_adjacency_matrix_graph_from_json_string(json_string: str) -> Adjacency
     """Creates and returns a new adjacency matrix graph created according to the
     JSON definition represented by the given string.
 
+    This method ensures that the underlying adjacency matrix of the created graph
+    has a capacity sufficient to represent the graph described by the given JSON
+    definition.
+
     Args:
         json_string (str): String carrying the JSON definition of the graph to be
                            built.
@@ -118,9 +122,14 @@ def build_adjacency_matrix_graph_from_json_string(json_string: str) -> Adjacency
         graph.add_edge(start, destination, weight)
     return graph
 
+
 def build_adjacency_matrix_graph_from_json_file(path: str) -> AdjacencyMatrixGraph:
     """Creates and returns a new adjacency matrix graph created according to the given
     JSON definition contained in the given file.
+
+    This method ensures that the underlying adjacency matrix of the created graph
+    has a capacity sufficient to represent the graph described by the given JSON
+    definition.
 
     Args:
         path (str): Path to the JSON file containing the graph definition to be
