@@ -173,7 +173,7 @@ class _DistanceTable:
         self._entries: Dict[str, _DistanceTableEntry] = {
             starting_vertex: _DistanceTableEntry(starting_vertex, starting_vertex, 0)
         }
-        # print(f'Distance table entry created for starting vertex {starting_vertex}')
+        self._starting_vertex = starting_vertex
 
     def get_distance_from_start(self, vertex: str) -> int:
         """Returns the currently known shortest distance of the given vertex from
@@ -251,22 +251,21 @@ class _DistanceTable:
         # print(f'Created entry: {self._entries[vertex]}')
         return True
 
-    def backtrack_shortest_path(self,
-                                request: ShortestPathSearchRequest) -> ShortestPathSearchResult:
-        # TODO: we should also check if the request carries the same start
-        # vertex as the one used to create this distance table
-        graph = request.graph
+    def backtrack_shortest_path(self, destination: str) -> ShortestPathSearchResult:
         path = deque()
-        destination: str = request.destination
-        start: str = self._entries[destination].predecessor
-        weight = graph.get_edge_weight(start, destination)
+        predecessor: str = self._entries[destination].predecessor
+        destination_distance = self._entries[destination].distance_from_start
+        predecessor_distance = self._entries[predecessor].distance_from_start
+        weight = destination_distance - predecessor_distance
         while True:
-            path.appendleft(Edge(start, destination, weight))
-            destination = start
-            start = self._entries[destination].predecessor
-            if start == destination == request.start:
+            path.appendleft(Edge(predecessor, destination, weight))
+            destination = predecessor
+            predecessor = self._entries[destination].predecessor
+            if predecessor == destination == self._starting_vertex:
                 break
-            weight = graph.get_edge_weight(start, destination)
+            destination_distance = self._entries[destination].distance_from_start
+            predecessor_distance = self._entries[predecessor].distance_from_start
+            weight = destination_distance - predecessor_distance
         return ShortestPathSearchResult(tuple(path))
 
     def __contains__(self, vertex: str) -> bool:
@@ -370,4 +369,4 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
         distance_table = _build_weighted_distance_table(request)
     else:
         distance_table = _build_unweighted_distance_table(request)
-    return distance_table.backtrack_shortest_path(request)
+    return distance_table.backtrack_shortest_path(request.destination)

@@ -20,7 +20,7 @@
 """Unit tests for the graphlib.algorithms module.
 """
 
-from pytest import mark, raises
+from pytest import raises
 
 from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
 from graphlib.algorithms import find_shortest_path, sort_topologically
@@ -77,7 +77,6 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         assert distance_table.get_distance_from_start('D') == 8
         assert distance_table.get_predecessor('D') == 'C'
     
-    @mark.skip('Test case not implemented yet')
     def test_backtracking_reconstructs_proper_shortest_path(self):
         distance_table = _DistanceTable('A')
         distance_table.update('B', 'A', 2)
@@ -89,12 +88,11 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         distance_table.update('F', 'E', 12)
         distance_table.update('G', 'F', 15)
 
-        # search_result = distance_table.backtrack_shortest_path('G')
-        # distance_table.backtrack_shortest_path('G') == ShortestPathSearchResult((
-        #     Edge(start='A', destination='B', weight=2),
-        #     Edge(start='B', destination='F', weight=2),
-        #     Edge(start='F', destination='G', weight=3),
-        # ))
+        distance_table.backtrack_shortest_path('G') == ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='F', weight=2),
+            Edge(start='F', destination='G', weight=3),
+        ))
 
     def test_attempt_to_get_distance_for_non_existent_vertex_leads_to_error(self):
         distance_table = _DistanceTable('A')
