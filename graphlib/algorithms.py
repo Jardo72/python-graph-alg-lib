@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from typing import Dict, Sequence, Tuple
 
 from graphlib.graph import AbstractGraph, Edge, GraphType
-from graphlib.util import PriorityQueue, QueueableItem
+from graphlib.util import AutoIncrement, PriorityQueue, QueueableItem
 
 
 def sort_topologically(graph: AbstractGraph) -> Sequence[str]:
@@ -126,6 +126,12 @@ class MinimumSpanningTree:
         minimum spanning tree.
         """
         return sum(map(lambda edge: edge.weight, self.edges))
+
+    def __contains__(self, edge: Edge) -> bool:
+        return edge in self.edges
+
+    def __len__(self) -> int:
+        return len(self.edges)
 
 
 @dataclass
@@ -378,23 +384,25 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
 
 
 def find_minimum_spanning_tree(graph: AbstractGraph, start: str) -> MinimumSpanningTree:
-    distance_table = _DistanceTable(start)
     explored_vertices = {start}
+    sequence = AutoIncrement()
     queue = PriorityQueue()
     result = set()
 
-    for adjacent_vertex in graph.get_adjacent_vertices(start):
-        weight = graph.get_edge_weight(start, adjacent_vertex)
-        distance_table.update(adjacent_vertex, start, weight)
-        item = QueueableItem(adjacent_vertex, weight, None)
+    for edge in graph.get_outgoing_edges(start):
+        item = QueueableItem(sequence.next_value_as_str(), edge.weight, edge)
         queue.enqueue(item)
 
-    while not queue.empty():
+    while not queue.empty() and len(explored_vertices) < graph.vertex_count:
         item = queue.dequeue()
-        current_vertex = item.key
+        current_edge = item.value
+        current_vertex = current_edge.destination
         if current_vertex in explored_vertices:
             continue
         explored_vertices.add(current_vertex)
-        pass
+        result.add(current_edge)
+        for adjacent_edge in graph.get_outgoing_edges(current_vertex):
+            item = QueueableItem(sequence.next_value_as_str(), adjacent_edge.weight, adjacent_edge)
+            queue.enqueue(item)
 
     return MinimumSpanningTree(start, tuple(result))

@@ -22,7 +22,7 @@
 
 from pytest import raises
 
-from graphlib.util import PriorityQueue, QueueableItem
+from graphlib.util import AutoIncrement, PriorityQueue, QueueableItem
 
 
 class TestPriorityQueue: # pylint: disable=R0201,C0116
@@ -145,3 +145,45 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
 
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
+
+
+class TestAutoIncrement:
+    """Collection of test methods exercising the class :class:
+    graphlib.util.AutoIncrement.
+    """
+
+    def test_next_value_returns_proper_values_if_default_initial_value_is_used(self):
+        sequence = AutoIncrement()
+
+        assert sequence.next_value() == 1
+        assert sequence.next_value() == 2
+        assert sequence.next_value() == 3
+
+    def test_next_value_as_str_returns_proper_values_if_default_initial_value_is_used(self):
+        sequence = AutoIncrement()
+
+        assert sequence.next_value_as_str() == '1'
+        assert sequence.next_value_as_str() == '2'
+        assert sequence.next_value_as_str() == '3'
+
+    def test_next_value_returns_proper_values_if_custom_initial_value_is_used(self):
+        sequence = AutoIncrement(5)
+
+        assert sequence.next_value() == 5
+        assert sequence.next_value() == 6
+        assert sequence.next_value() == 7
+
+    def test_next_value_as_str_returns_proper_values_if_custom_initial_value_is_used(self):
+        sequence = AutoIncrement(8)
+
+        assert sequence.next_value_as_str() == '8'
+        assert sequence.next_value_as_str() == '9'
+        assert sequence.next_value_as_str() == '10'
+
+    def test_combination_of_generation_methods_does_not_break_the_sequence(self):
+        sequence = AutoIncrement()
+
+        assert sequence.next_value() == 1
+        assert sequence.next_value_as_str() == '2'
+        assert sequence.next_value() == 3
+        assert sequence.next_value_as_str() == '4'

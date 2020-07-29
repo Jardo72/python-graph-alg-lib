@@ -23,7 +23,7 @@
 from pytest import raises
 
 from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
-from graphlib.algorithms import find_shortest_path, sort_topologically
+from graphlib.algorithms import find_minimum_spanning_tree, find_shortest_path, sort_topologically
 from graphlib.algorithms import _DistanceTable
 from graphlib.graph import AdjacencySetGraph, Edge, GraphType
 
@@ -532,7 +532,7 @@ class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
     graphlib.algorithms.MinimumSpanningTree class.
     """
 
-    def test_minimum_spanning_tree_provides_proper_derived_properties(self):
+    def test_overall_weight_is_calculated_properly(self):
         edges = (
             Edge(start='A', destination='B', weight=2),
             Edge(start='B', destination='C', weight=3),
@@ -542,3 +542,56 @@ class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
         minimum_spanning_tree = MinimumSpanningTree('A', edges)
 
         assert minimum_spanning_tree.overall_weight == 12
+
+    def test_len_function_provides_number_of_edges(self):
+        edges = (
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='C', weight=3),
+            Edge(start='C', destination='F', weight=5),
+            Edge(start='D', destination='D', weight=2),
+        )
+        minimum_spanning_tree = MinimumSpanningTree('A', edges)
+
+        assert len(minimum_spanning_tree) == 4
+
+    def test_in_operator_verifies_presence_of_edge(self):
+        edges = (
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='C', weight=3),
+            Edge(start='C', destination='F', weight=5),
+            Edge(start='D', destination='D', weight=2),
+        )
+        minimum_spanning_tree = MinimumSpanningTree('A', edges)
+
+        assert Edge(start='A', destination='B', weight=2) in minimum_spanning_tree
+        assert Edge(start='B', destination='C', weight=3) in minimum_spanning_tree
+
+        assert Edge(start='A', destination='B', weight=3) not in minimum_spanning_tree
+        assert Edge(start='A', destination='X', weight=2) not in minimum_spanning_tree
+        assert Edge(start='X', destination='B', weight=2) not in minimum_spanning_tree
+
+
+class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
+
+    def test_case_01(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 5)
+        graph.add_edge('A', 'C', 7)
+        graph.add_edge('B', 'C', 2)
+        graph.add_edge('B', 'D', 3)
+        graph.add_edge('B', 'E', 4)
+        graph.add_edge('C', 'D', 4)
+        graph.add_edge('C', 'E', 6)
+        graph.add_edge('D', 'E', 8)
+        graph.add_edge('D', 'F', 10)
+        graph.add_edge('E', 'F', 4)
+
+        minimum_spanning_tree = find_minimum_spanning_tree(graph, 'A')
+
+        assert minimum_spanning_tree.overall_weight == 18
+        assert len(minimum_spanning_tree) == 5
+        assert Edge(start='A', destination='B', weight=5) in minimum_spanning_tree
+        assert Edge(start='B', destination='C', weight=2) in minimum_spanning_tree
+        assert Edge(start='B', destination='D', weight=3) in minimum_spanning_tree
+        assert Edge(start='B', destination='E', weight=4) in minimum_spanning_tree
+        assert Edge(start='E', destination='F', weight=4) in minimum_spanning_tree
