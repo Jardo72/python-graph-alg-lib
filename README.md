@@ -13,6 +13,7 @@ Library of Graph Algorithms for Python is a simple Python library providing impl
 ### Python Version and Dependencies
 When implementing the library, I used Python 3.8. Slightly older versions of Python might work as well, but there is no guarantee. The library code uses only the Python Standard Library. In other words it does not depend on any other modules. Unit tests depend on PyTest 5.4.3. If you want to measure the code coverage, you will also need PyTest Coverage 2.10.0 (i.e. optional test dependency). Similarly, if you want to generate test reports in HTML format, PyTest HTML plugin is needed.
 
+<a name="library-code"></a>
 ### Library Code
 The library code is divided to five modules:
 - [graphlib.graph](./graphlib/graph.py) module provides two graph implementations (adjacency matrix, adjacency set), plus
@@ -24,7 +25,7 @@ an abstract base class prescribing the public API of any graph implementation.
 
 
 ### Test Code
-The test code is concentrated in the [tests](./tests) directory, which is just a flat structure of modules with test code. For each of the library modules listed in the [Library Code](#Library Code) section, there is a corresponding test module. The names of all test modules start with the prefix `test_`, so that PyTest can recognize them as test modules. Within each test module, test methods are grouped to test suite classes. A test suite class is a simple class serving as collection (grouping) of test methods exercising the same functionality.
+The test code is concentrated in the [tests](./tests) directory, which is just a flat structure of modules with test code. For each of the library modules listed in the [Library Code](#library-code) section, there is a corresponding test module. The names of all test modules start with the prefix `test_`, so that PyTest can recognize them as test modules. Within each test module, test methods are grouped to test suite classes. A test suite class is a simple class serving as collection (grouping) of test methods exercising the same functionality. All test dependencies are captured in the [test dependencies](./test-requirements.txt) file.
 
 ## Creation of Distribution Package
 In order to build the distribution package, execute the following command in the root directory of the project:
@@ -46,4 +47,4 @@ The following command triggers the execution of the unit tests, and it also gene
 python -m pytest --cov=graphlib --cov-branch --cov-report html --html=test-results.html tests
 ```
 
-The command above will only work if you have installed the corresponding PyTest plug-ins (see [test dependencies](./test-requirements.txt).
+The command above will only work if you have installed the corresponding PyTest plug-ins (see [test dependencies](./test-requirements.txt)).
