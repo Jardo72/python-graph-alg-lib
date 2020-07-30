@@ -128,9 +128,26 @@ class MinimumSpanningTree:
         return sum(map(lambda edge: edge.weight, self.edges))
 
     def __contains__(self, edge: Edge) -> bool:
+        """Verifies whether the given edge is part of the minimum spanning tree
+        represented by this object.
+
+        Args:
+            edge (Edge): The edge whose presence in this minimum spanning tree is
+                         to be verified.
+
+        Returns:
+            bool: True if and only if the given edge is contained in this minimum
+                  spanning tree; False otherwise.
+        """
         return edge in self.edges
 
     def __len__(self) -> int:
+        """Returns the number of edges forming this minimum spanning tree.
+
+        Returns:
+            int: The number of edges contained in the minimum spanning tree
+                 represented by this object.
+        """
         return len(self.edges)
 
 

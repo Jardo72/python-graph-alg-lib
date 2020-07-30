@@ -1,33 +1,30 @@
 # Library of Graph Algorithms for Python
 
 ## Introduction
-Library of Graph Algorithms for Python is a simple Python library providing implementations of various graph algorithms. It is more or less an educational/experimental project serving as sandbox for improvement of my Python skills. The following algorithms are provided:
-- Topological Sort
-- Dijsktra Algorithm (Shortest Path)
+Library of Graph Algorithms for Python is a simple Python library providing implementations of various graph algorithms. It is more or less an educational/experimental project serving me as Python sandbox. The current version of the library provides the following algorithms:
+- topological sort
+- shortest path search for unweighted graphs
+- shortest path search for weighted graphs (Dijkstra's algorithm)
+- minimum spanning tree for connected graphs (Prim's algorithm)
 
 
 ## Runtime Environment, Source Code Organization etc.
 
 ### Python Version and Dependencies
-TODO
-- Python 3.8
-- library code depends only on the Python Standard Library; it does not depend on any other module
-- unit tests depend on PyTest 5.4.3
-- optionally PyTest Coverage 2.10.0 if you want to measre the code coverage
-- optionally PyTest HTML plugin if you want to generate test reports in HTML format
+When implementing the library, I used Python 3.8. Slightly older versions of Python might work as well, but there is no guarantee. The library code uses only the Python Standard Library. In other words it does not depend on any other modules. Unit tests depend on PyTest 5.4.3. If you want to measure the code coverage, you will also need PyTest Coverage 2.10.0 (i.e. optional test dependency). Similarly, if you want to generate test reports in HTML format, PyTest HTML plugin is needed.
 
 ### Library Code
 The library code is divided to five modules:
-- `graphlib.graph` module provides two graph implementations (adjacency matrix, adjacency set), plus
+- [graphlib.graph](./graphlib/graph.py) module provides two graph implementations (adjacency matrix, adjacency set), plus
 an abstract base class prescribing the public API of any graph implementation.
-- `graphlib.algorithms` provides implementations of various graph algorithms like topological sort, shortest path search, minimum spanning tree search etc.
-- `graphlib.util` module provides functionalities that support the implementation of the algorithms, for instance a priority queue.
-- `graphlib.dump` module provides dump-functions that can pretty-print various structures like graph, result of shortest path search, minimum spanning tree etc. These functions can write their output to a file, to stdout, or to an instance of io.StringIO.
-- `graphlib.jsondef` module provides functions that can build a graph accorging to a JSON definition.
+- [graphlib.algorithms](./graphlib/algorithms.py) provides implementations of various graph algorithms like topological sort, shortest path search, minimum spanning tree search etc.
+- [graphlib.util](./graphlib/util.py) module provides functionalities that support the implementation of the algorithms, for instance a priority queue.
+- [graphlib.dump](./graphlib/dump.py) module provides dump-functions that can pretty-print various structures like graph, result of shortest path search, minimum spanning tree etc. These functions can write their output to a file, to stdout, or to an instance of io.StringIO.
+- [graphlib.jsondef](./graphlib/jsondef.py) module provides functions that can build a graph accorging to a JSON definition.
 
 
 ### Test Code
-
+The test code is concentrated in the [tests](./tests) directory, which is just a flat structure of modules with test code. For each of the library modules listed in the [Library Code](#Library Code) section, there is a corresponding test module. The names of all test modules start with the prefix `test_`, so that PyTest can recognize them as test modules. Within each test module, test methods are grouped to test suite classes. A test suite class is a simple class serving as collection (grouping) of test methods exercising the same functionality.
 
 ## Creation of Distribution Package
 In order to build the distribution package, execute the following command in the root directory of the project:
@@ -49,4 +46,4 @@ The following command triggers the execution of the unit tests, and it also gene
 python -m pytest --cov=graphlib --cov-branch --cov-report html --html=test-results.html tests
 ```
 
-The command above will only work if you have installed the corresponding PyTest plug-ins (see dependencies - TODO crossref).
+The command above will only work if you have installed the corresponding PyTest plug-ins (see [test dependencies](./test-requirements.txt).
