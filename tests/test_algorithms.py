@@ -617,3 +617,39 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='E', destination='B', weight=2) in minimum_spanning_tree
         assert Edge(start='F', destination='G', weight=2) in minimum_spanning_tree
         assert Edge(start='E', destination='H', weight=3) in minimum_spanning_tree
+
+    def test_case_03(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 7)
+        graph.add_edge('B', 'C', 4)
+        graph.add_edge('A', 'D', 2)
+        graph.add_edge('B', 'E', 6)
+        graph.add_edge('C', 'F', 1)
+        graph.add_edge('D', 'E', 3)
+        graph.add_edge('E', 'F', 5)
+        graph.add_edge('D', 'G', 5)
+        graph.add_edge('E', 'H', 2)
+        graph.add_edge('F', 'I', 2)
+        graph.add_edge('G', 'H', 2)
+        graph.add_edge('H', 'I', 3)
+        graph.add_edge('G', 'J', 1)
+        graph.add_edge('H', 'F', 7)
+        graph.add_edge('I', 'L', 3)
+        graph.add_edge('J', 'K', 2)
+        graph.add_edge('K', 'L', 8)
+
+        minimum_spanning_tree = find_minimum_spanning_tree(graph, 'A')
+
+        assert minimum_spanning_tree.overall_weight == 25
+        assert len(minimum_spanning_tree) == 11
+        assert Edge(start='A', destination='D', weight=2) in minimum_spanning_tree
+        assert Edge(start='D', destination='E', weight=3) in minimum_spanning_tree
+        assert Edge(start='E', destination='H', weight=2) in minimum_spanning_tree
+        assert Edge(start='H', destination='G', weight=2) in minimum_spanning_tree
+        assert Edge(start='G', destination='J', weight=1) in minimum_spanning_tree
+        assert Edge(start='H', destination='I', weight=3) in minimum_spanning_tree
+        assert Edge(start='I', destination='L', weight=3) in minimum_spanning_tree
+        assert Edge(start='I', destination='F', weight=2) in minimum_spanning_tree
+        assert Edge(start='F', destination='C', weight=1) in minimum_spanning_tree
+        assert Edge(start='C', destination='B', weight=4) in minimum_spanning_tree
+        assert Edge(start='J', destination='K', weight=2) in minimum_spanning_tree
