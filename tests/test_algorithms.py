@@ -527,6 +527,59 @@ class TestShortestPathSearchForWeightedGraphSuiteThree: # pylint: disable=R0201,
         ))
 
 
+class TestShortestPathSearchForWeightedGraphSuiteFour: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the method :method:
+    graphlib.algorithms.find_shortest_path for weighted graphs.
+    """
+
+    def _create_tested_graph(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B', 2)
+        graph.add_edge('C', 'B', 3)
+        graph.add_edge('A', 'D', 8)
+        graph.add_edge('B', 'E', 3)
+        graph.add_edge('C', 'F', 4)
+        graph.add_edge('E', 'D', 2)
+        graph.add_edge('F', 'E', 5)
+        graph.add_edge('D', 'G', 2)
+        graph.add_edge('E', 'H', 10)
+        graph.add_edge('I', 'F', 3)
+        graph.add_edge('G', 'H', 4)
+        graph.add_edge('H', 'I', 2)
+        graph.add_edge('J', 'G', 2)
+        graph.add_edge('H', 'K', 3)
+        graph.add_edge('I', 'L', 12)
+        graph.add_edge('K', 'J', 2)
+        graph.add_edge('K', 'L', 3)
+        return graph
+
+    def test_path_from_A_to_J(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='A', destination='J')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=2),
+            Edge(start='B', destination='E', weight=3),
+            Edge(start='E', destination='D', weight=2),
+            Edge(start='D', destination='G', weight=2),
+            Edge(start='G', destination='H', weight=4),
+            Edge(start='H', destination='K', weight=3),
+            Edge(start='K', destination='J', weight=2),
+        ))
+
+    def test_path_from_F_to_I(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='F', destination='I')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='F', destination='E', weight=5),
+            Edge(start='E', destination='D', weight=2),
+            Edge(start='D', destination='G', weight=2),
+            Edge(start='G', destination='H', weight=4),
+            Edge(start='H', destination='I', weight=2),
+        ))
+
+
 class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :class:
     graphlib.algorithms.MinimumSpanningTree class.
