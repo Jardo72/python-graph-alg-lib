@@ -25,7 +25,7 @@ an abstract base class prescribing the public API of any graph implementation.
 
 
 ### Test Code
-The test code is concentrated in the [tests](./tests) directory, which is just a flat structure of modules with test code. For each of the library modules listed in the [Library Code](#library-code) section, there is a corresponding test module. The names of all test modules start with the prefix `test_`, so that PyTest can recognize them as test modules. Within each test module, test methods are grouped to test suite classes. A test suite class is a simple class serving as collection (grouping) of test methods exercising the same functionality. All test dependencies are captured in the [test dependencies](./test-requirements.txt) file.
+The test code is concentrated in the [tests](./tests) directory, which is just a flat structure of modules with test code. For each of the library modules listed in the [Library Code](#library-code) section, there is a corresponding test module. The names of all test modules start with the prefix `test_`, so that PyTest can recognize them as test modules. Within each test module, test methods are grouped to test suite classes. A test suite class is a simple class serving as collection (grouping) of test methods exercising the same functionality. All test dependencies are captured in the [test dependencies](./test-requirements.txt) file. Visualization of the diagrams used by the test code can be found in the [test-graphs](./test-graphs) directory.
 
 ## Creation of Distribution Package
 In order to build the distribution package, execute the following command in the root directory of the project:
