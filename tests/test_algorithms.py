@@ -188,6 +188,9 @@ class TestTopologicalSort: # pylint: disable=R0201,C0116
         sort_result = sort_topologically(graph)
         sort_result = list(sort_result)
 
+        assert len(sort_result) == 7
+        for vertex in 'ABCDEFG':
+            assert vertex in sort_result
         assert sort_result.index('A') < sort_result.index('C')
         assert sort_result.index('B') < sort_result.index('C')
         assert sort_result.index('D') < sort_result.index('F')

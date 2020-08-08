@@ -19,10 +19,10 @@
 ### Unweighted Graphs
 
 #### TestShortestPathSearchForUnweightedGraphSuiteOne
-![TestShortestPathSearchForUnweightedGraphSuiteOne](./images/TestShortestPathSearchForUnweightedGraphSuiteOne.png)
+![TestShortestPathSearchForUnweightedGraphSuiteOne](./TestShortestPathSearchForUnweightedGraphSuiteOne.png)
 
 #### TestShortestPathSearchForUnweightedGraphSuiteTwo
-![TestShortestPathSearchForUnweightedGraphSuiteTwo](./images/TestShortestPathSearchForUnweightedGraphSuiteTwo.png)
+![TestShortestPathSearchForUnweightedGraphSuiteTwo](./TestShortestPathSearchForUnweightedGraphSuiteTwo.png)
 
 ### Weighted Graphs
 
