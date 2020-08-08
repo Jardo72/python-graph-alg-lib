@@ -20,6 +20,8 @@
 """Unit tests for the graphlib.algorithms module.
 """
 
+from itertools import permutations
+
 from pytest import raises
 
 from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
@@ -123,8 +125,9 @@ class TestTopologicalSort: # pylint: disable=R0201,C0116
         graph.add_edge('E', 'F')
 
         sort_result = sort_topologically(graph)
-        actual_order = list(sort_result)
-        assert actual_order in [
+        sort_result = list(sort_result)
+
+        assert sort_result in [
             ['A', 'B', 'C', 'D', 'E', 'F'],
             ['B', 'A', 'C', 'D', 'E', 'F'],
             ['A', 'B', 'D', 'C', 'E', 'F'],
@@ -140,43 +143,37 @@ class TestTopologicalSort: # pylint: disable=R0201,C0116
         graph.add_edge('A', 'B')
         graph.add_edge('B', 'C')
         graph.add_edge('B', 'D')
-        graph.add_edge('D', 'E')
+        graph.add_edge('B', 'E')
         graph.add_edge('C', 'F')
+        graph.add_edge('D', 'F')
         graph.add_edge('E', 'F')
         graph.add_edge('F', 'G')
 
         sort_result = sort_topologically(graph)
         sort_result = list(sort_result)
+
         assert sort_result in [
-            ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-            ['A', 'B', 'E', 'C', 'D', 'F', 'G'],
-            ['A', 'B', 'C', 'E', 'D', 'F', 'G'],
+            ['A', 'B'] + list(p) + ['F', 'G'] for p in permutations('CDE', 3)
         ]
 
     def test_topological_sort_returns_vertices_in_proper_order_case_03(self):
         graph = AdjacencySetGraph(GraphType.DIRECTED)
         graph.add_edge('A', 'B')
-        graph.add_edge('B', 'C')
         graph.add_edge('C', 'D')
-        graph.add_edge('C', 'E')
-        graph.add_edge('C', 'F')
-        graph.add_edge('D', 'G')
-        graph.add_edge('E', 'G')
-        graph.add_edge('G', 'H')
-        graph.add_edge('F', 'H')
-        graph.add_edge('H', 'I')
+        graph.add_edge('B', 'E')
+        graph.add_edge('D', 'E')
+        graph.add_edge('E', 'F')
 
         sort_result = sort_topologically(graph)
         sort_result = list(sort_result)
+
         assert sort_result in [
-            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
-            ['A', 'B', 'C', 'D', 'F', 'E', 'G', 'H', 'I'],
-            ['A', 'B', 'C', 'E', 'D', 'F', 'G', 'H', 'I'],
-            ['A', 'B', 'C', 'E', 'F', 'D', 'G', 'H', 'I'],
-            ['A', 'B', 'C', 'F', 'E', 'D', 'G', 'H', 'I'],
-            ['A', 'B', 'C', 'F', 'D', 'E', 'G', 'H', 'I'],
-            ['A', 'B', 'C', 'D', 'E', 'G', 'F', 'H', 'I'],
-            ['A', 'B', 'C', 'E', 'D', 'G', 'F', 'H', 'I'],
+            ['A', 'B', 'C', 'D', 'E', 'F'],
+            ['A', 'C', 'B', 'D', 'E', 'F'],
+            ['A', 'C', 'D', 'B', 'E', 'F'],
+            ['C', 'D', 'A', 'B', 'E', 'F'],
+            ['C', 'A', 'D', 'B', 'E', 'F'],
+            ['C', 'A', 'B', 'D', 'E', 'F'],
         ]
 
     def test_attempt_to_apply_topological_sort_to_undirected_graph_leads_to_exception(self):
