@@ -176,6 +176,25 @@ class TestTopologicalSort: # pylint: disable=R0201,C0116
             ['C', 'A', 'B', 'D', 'E', 'F'],
         ]
 
+    def test_topological_sort_returns_vertices_in_proper_order_case_04(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
+        graph.add_edge('D', 'F')
+        graph.add_edge('E', 'F')
+        graph.add_edge('C', 'G')
+        graph.add_edge('F', 'G')
+
+        sort_result = sort_topologically(graph)
+        sort_result = list(sort_result)
+
+        assert sort_result.index('A') < sort_result.index('C')
+        assert sort_result.index('B') < sort_result.index('C')
+        assert sort_result.index('D') < sort_result.index('F')
+        assert sort_result.index('E') < sort_result.index('F')
+        assert sort_result.index('C') < sort_result.index('G')
+        assert sort_result.index('F') < sort_result.index('G')
+
     def test_attempt_to_apply_topological_sort_to_undirected_graph_leads_to_exception(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'C')
