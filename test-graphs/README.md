@@ -24,6 +24,9 @@
 #### TestShortestPathSearchForUnweightedGraphSuiteTwo
 ![TestShortestPathSearchForUnweightedGraphSuiteTwo](./TestShortestPathSearchForUnweightedGraphSuiteTwo.png)
 
+#### TestShortestPathSearchForUnweightedGraphSuiteThree
+![TestShortestPathSearchForUnweightedGraphSuiteThree](./TestShortestPathSearchForUnweightedGraphSuiteThree.png)
+
 ### Weighted Graphs
 
 #### TestShortestPathSearchForWeightedGraphSuiteOne
