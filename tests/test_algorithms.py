@@ -237,7 +237,7 @@ class TestShortestPathSearchResult: # pylint: disable=R0201,C0116
         assert 19 == shortest_path.overall_distance
 
 
-class TestShortestPathSearchForUnweightedGraphSuiteOne:
+class TestShortestPathSearchForUnweightedGraphSuiteOne: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for unweighted graphs.
     """
@@ -273,7 +273,7 @@ class TestShortestPathSearchForUnweightedGraphSuiteOne:
         ))
 
 
-class TestShortestPathSearchForUnweightedGraphSuiteTwo:
+class TestShortestPathSearchForUnweightedGraphSuiteTwo: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for unweighted graphs.
     """
@@ -314,6 +314,133 @@ class TestShortestPathSearchForUnweightedGraphSuiteTwo:
             Edge(start='D', destination='E', weight=1),
             Edge(start='E', destination='F', weight=1),
             Edge(start='F', destination='G', weight=1),
+        ))
+
+
+class TestShortestPathSearchForUnweightedGraphSuiteThree: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the method :method:
+    graphlib.algorithms.find_shortest_path for unweighted graphs.
+    """
+
+    def _create_tested_graph(self):
+        graph = AdjacencySetGraph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('B', 'C')
+        graph.add_edge('C', 'B')
+        graph.add_edge('C', 'D')
+        graph.add_edge('A', 'E')
+        graph.add_edge('B', 'F')
+        graph.add_edge('F', 'A')
+        graph.add_edge('C', 'G')
+        graph.add_edge('H', 'D')
+        graph.add_edge('F', 'E')
+        graph.add_edge('F', 'G')
+        graph.add_edge('G', 'F')
+        graph.add_edge('H', 'G')
+        graph.add_edge('E', 'I')
+        graph.add_edge('J', 'F')
+        graph.add_edge('F', 'K')
+        graph.add_edge('K', 'H')
+        graph.add_edge('L', 'H')
+        graph.add_edge('J', 'I')
+        graph.add_edge('K', 'J')
+        graph.add_edge('L', 'K')
+        graph.add_edge('M', 'I')
+        graph.add_edge('J', 'N')
+        graph.add_edge('P', 'J')
+        graph.add_edge('P', 'L')
+        graph.add_edge('N', 'M')
+        graph.add_edge('N', 'O')
+        graph.add_edge('O', 'P')
+        graph.add_edge('P', 'O')
+        return graph
+
+    def test_path_from_A_to_D(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='A', destination='D')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=1),
+            Edge(start='B', destination='C', weight=1),
+            Edge(start='C', destination='D', weight=1),
+        ))
+
+    def test_path_from_A_to_I(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='A', destination='I')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='A', destination='E', weight=1),
+            Edge(start='E', destination='I', weight=1),
+        ))
+
+    def test_path_from_A_to_M(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='A', destination='M')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=1),
+            Edge(start='B', destination='F', weight=1),
+            Edge(start='F', destination='K', weight=1),
+            Edge(start='K', destination='J', weight=1),
+            Edge(start='J', destination='N', weight=1),
+            Edge(start='N', destination='M', weight=1),
+        ))
+
+    def test_path_from_A_to_P(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='A', destination='P')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='A', destination='B', weight=1),
+            Edge(start='B', destination='F', weight=1),
+            Edge(start='F', destination='K', weight=1),
+            Edge(start='K', destination='J', weight=1),
+            Edge(start='J', destination='N', weight=1),
+            Edge(start='N', destination='O', weight=1),
+            Edge(start='O', destination='P', weight=1),
+        ))
+
+    def test_path_from_P_to_A(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='P', destination='A')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='P', destination='J', weight=1),
+            Edge(start='J', destination='F', weight=1),
+            Edge(start='F', destination='A', weight=1),
+        ))
+
+    def test_path_from_P_to_C(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='P', destination='C')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='P', destination='J', weight=1),
+            Edge(start='J', destination='F', weight=1),
+            Edge(start='F', destination='A', weight=1),
+            Edge(start='A', destination='B', weight=1),
+            Edge(start='B', destination='C', weight=1),
+        ))
+
+    def test_path_from_P_to_G(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='P', destination='G')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='P', destination='J', weight=1),
+            Edge(start='J', destination='F', weight=1),
+            Edge(start='F', destination='G', weight=1),
+        ))
+
+    def test_path_from_P_to_M(self):
+        graph = self._create_tested_graph()
+
+        request = ShortestPathSearchRequest(graph, start='P', destination='M')
+        assert find_shortest_path(request) == ShortestPathSearchResult((
+            Edge(start='P', destination='J', weight=1),
+            Edge(start='J', destination='N', weight=1),
+            Edge(start='N', destination='M', weight=1),
         ))
 
 
