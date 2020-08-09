@@ -11,7 +11,7 @@ Library of Graph Algorithms for Python is a simple Python library providing impl
 ## Runtime Environment, Source Code Organization etc.
 
 ### Python Version and Dependencies
-When implementing the library, I used Python 3.8. Slightly older versions of Python might work as well, but there is no guarantee. The library code uses only the Python Standard Library. In other words it does not depend on any other modules. Unit tests depend on PyTest 5.4.3. If you want to measure the code coverage, you will also need PyTest Coverage 2.10.0 (i.e. optional test dependency). Similarly, if you want to generate test reports in HTML format, PyTest HTML plugin is needed.
+When implementing the library, I used Python 3.8. Slightly older versions of Python might work as well, but there is no guarantee. The library code uses only the Python Standard Library. In other words it does not depend on any other modules. Unit tests depend on [PyTest 5.4.3](https://docs.pytest.org/). If you want to measure the code coverage, you will also need [PyTest Coverage 2.10.0](https://pypi.org/project/pytest-cov) (i.e. optional test dependency). Similarly, if you want to generate test reports in HTML format, [PyTest HTML plugin](https://pypi.org/project/pytest-html) is needed.
 
 <a name="library-code"></a>
 ### Library Code
