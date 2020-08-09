@@ -128,7 +128,7 @@ class MinimumSpanningTreeSearchRequest:
     """
     graph: AbstractGraph
     algorithm: MinimumSpanningTreeAlgorithm
-    search_start: Optional[str]
+    search_start: Optional[str] = None
 
 
 @dataclass(frozen=True)

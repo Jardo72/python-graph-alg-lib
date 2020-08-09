@@ -42,3 +42,14 @@
 ![TestShortestPathSearchForWeightedGraphSuiteFour](./TestShortestPathSearchForWeightedGraphSuiteFour.png)
 
 ## Minimum Spanning Tree
+
+### Prim's Algorithm
+
+#### TestMinimumSpanningTreeSearch.test_prims_algorithm_01
+![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #1](./TestMinimumSpanningTreeSearchPrimOne.png)
+
+#### TestMinimumSpanningTreeSearch.test_prims_algorithm_02
+![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #2](./TestMinimumSpanningTreeSearchPrimTwo.png)
+
+#### TestMinimumSpanningTreeSearch.test_prims_algorithm_03
+![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #3](./TestMinimumSpanningTreeSearchPrimThree.png)

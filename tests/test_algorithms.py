@@ -835,7 +835,7 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         graph.add_edge('G', 'H', 2)
         graph.add_edge('H', 'I', 3)
         graph.add_edge('G', 'J', 1)
-        graph.add_edge('H', 'F', 7)
+        graph.add_edge('H', 'K', 7)
         graph.add_edge('I', 'L', 3)
         graph.add_edge('J', 'K', 2)
         graph.add_edge('K', 'L', 8)
