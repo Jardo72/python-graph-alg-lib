@@ -33,7 +33,7 @@ In order to build the distribution package, execute the following command in the
 python setup.py sdist bdist_wheel
 ```
 
-The command above creates both source archive (in .tar.gz format) and distribution in wheel format.
+The command above creates both source archive in .tar.gz format and distribution in wheel format.
 
 ## Execution of Unit Tests
 In order to execute the unit tests, execute the following command in the root directory of the project:
@@ -54,4 +54,4 @@ In order to perform analysis of the library code with [Pylint](https://www.pylin
 python -m pylint graphlib
 ```
 
-The command above will only work if you have installed the corresponding Pylint.
+The command above will only work if you have installed Pylint.
