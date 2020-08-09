@@ -20,7 +20,7 @@
 """This module provides methods allowing to dump various data structures
 like a graph or a result of shortest path search.
 """
-from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchResult
+from graphlib.algorithms import MinimumSpanningTreeSearchResult, ShortestPathSearchResult
 from graphlib.graph import AbstractGraph
 
 def dump_graph(graph: AbstractGraph, output):
@@ -71,7 +71,7 @@ def dump_shortest_path(shortest_path: ShortestPathSearchResult, output):
         output.write(f' - {edge.start} -> {edge.destination} (weight = {edge.weight})\n')
 
 
-def dump_minimum_spanning_tree(minimum_spanning_tree: MinimumSpanningTree, output):
+def dump_minimum_spanning_tree(minimum_spanning_tree: MinimumSpanningTreeSearchResult, output):
     """Dumps the given minimum spanning tree to the given text output.
 
     The dump provides information about the starting vertex of the search
@@ -86,7 +86,11 @@ def dump_minimum_spanning_tree(minimum_spanning_tree: MinimumSpanningTree, outpu
                                                   instance.
     """
     output.write('\n')
-    output.write(f'Minimum spanning tree (search start {minimum_spanning_tree.search_start})\n')
+    if minimum_spanning_tree.search_start:
+        output.write(f'Minimum spanning tree (search start {minimum_spanning_tree.search_start})\n')
+    else:
+        output.write('Minimum spanning tree\n')
+    output.write(f'Search algorithm {minimum_spanning_tree.algorithm}\n')
     output.write(f'Overall weight {minimum_spanning_tree.overall_weight}\n')
     output.write('Edges:\n')
     for edge in minimum_spanning_tree.edges:

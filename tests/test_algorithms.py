@@ -24,7 +24,8 @@ from itertools import permutations
 
 from pytest import raises
 
-from graphlib.algorithms import MinimumSpanningTree, ShortestPathSearchRequest, ShortestPathSearchResult
+from graphlib.algorithms import MinimumSpanningTreeAlgorithm, ShortestPathSearchRequest, ShortestPathSearchResult
+from graphlib.algorithms import MinimumSpanningTreeSearchRequest, MinimumSpanningTreeSearchResult
 from graphlib.algorithms import find_minimum_spanning_tree, find_shortest_path, sort_topologically
 from graphlib.algorithms import _DistanceTable
 from graphlib.graph import AdjacencySetGraph, Edge, GraphType
@@ -726,7 +727,7 @@ class TestShortestPathSearchForWeightedGraphSuiteFour: # pylint: disable=R0201,C
         ))
 
 
-class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
+class TestMinimumSpanningTreeSearchResult: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :class:
     graphlib.algorithms.MinimumSpanningTree class.
     """
@@ -738,7 +739,7 @@ class TestMinimumSpanningTree: # pylint: disable=R0201,C0116
             Edge(start='C', destination='F', weight=5),
             Edge(start='D', destination='D', weight=2),
         )
-        return MinimumSpanningTree('A', edges)
+        return MinimumSpanningTreeSearchResult(MinimumSpanningTreeAlgorithm.PRIM, 'A', edges)
 
     def test_overall_weight_is_calculated_properly(self):
         minimum_spanning_tree = self._create_minimum_spanning_tree()
@@ -766,7 +767,7 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
     method graphlib.algorithms.find_minimum_spanning_tree.
     """
 
-    def test_case_01(self):
+    def test_prims_algorithm_01(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 5)
         graph.add_edge('A', 'C', 7)
@@ -779,17 +780,18 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         graph.add_edge('D', 'F', 10)
         graph.add_edge('E', 'F', 4)
 
-        minimum_spanning_tree = find_minimum_spanning_tree(graph, 'A')
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.PRIM, 'A')
+        search_result = find_minimum_spanning_tree(search_request)
 
-        assert minimum_spanning_tree.overall_weight == 18
-        assert len(minimum_spanning_tree) == 5
-        assert Edge(start='A', destination='B', weight=5) in minimum_spanning_tree
-        assert Edge(start='B', destination='C', weight=2) in minimum_spanning_tree
-        assert Edge(start='B', destination='D', weight=3) in minimum_spanning_tree
-        assert Edge(start='B', destination='E', weight=4) in minimum_spanning_tree
-        assert Edge(start='E', destination='F', weight=4) in minimum_spanning_tree
+        assert search_result.overall_weight == 18
+        assert len(search_result) == 5
+        assert Edge(start='A', destination='B', weight=5) in search_result
+        assert Edge(start='B', destination='C', weight=2) in search_result
+        assert Edge(start='B', destination='D', weight=3) in search_result
+        assert Edge(start='B', destination='E', weight=4) in search_result
+        assert Edge(start='E', destination='F', weight=4) in search_result
 
-    def test_case_02(self):
+    def test_prims_algorithm_02(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 7)
         graph.add_edge('A', 'C', 8)
@@ -805,19 +807,20 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         graph.add_edge('F', 'H', 8)
         graph.add_edge('G', 'H', 9)
 
-        minimum_spanning_tree = find_minimum_spanning_tree(graph, 'A')
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.PRIM, 'A')
+        search_result = find_minimum_spanning_tree(search_request)
 
-        assert minimum_spanning_tree.overall_weight == 14
-        assert len(minimum_spanning_tree) == 7
-        assert Edge(start='A', destination='D', weight=3) in minimum_spanning_tree
-        assert Edge(start='D', destination='C', weight=1) in minimum_spanning_tree
-        assert Edge(start='C', destination='F', weight=2) in minimum_spanning_tree
-        assert Edge(start='F', destination='E', weight=1) in minimum_spanning_tree
-        assert Edge(start='E', destination='B', weight=2) in minimum_spanning_tree
-        assert Edge(start='F', destination='G', weight=2) in minimum_spanning_tree
-        assert Edge(start='E', destination='H', weight=3) in minimum_spanning_tree
+        assert search_result.overall_weight == 14
+        assert len(search_result) == 7
+        assert Edge(start='A', destination='D', weight=3) in search_result
+        assert Edge(start='D', destination='C', weight=1) in search_result
+        assert Edge(start='C', destination='F', weight=2) in search_result
+        assert Edge(start='F', destination='E', weight=1) in search_result
+        assert Edge(start='E', destination='B', weight=2) in search_result
+        assert Edge(start='F', destination='G', weight=2) in search_result
+        assert Edge(start='E', destination='H', weight=3) in search_result
 
-    def test_case_03(self):
+    def test_prims_algorithm_03(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 7)
         graph.add_edge('B', 'C', 4)
@@ -837,18 +840,19 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         graph.add_edge('J', 'K', 2)
         graph.add_edge('K', 'L', 8)
 
-        minimum_spanning_tree = find_minimum_spanning_tree(graph, 'A')
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.PRIM, 'A')
+        search_result = find_minimum_spanning_tree(search_request)
 
-        assert minimum_spanning_tree.overall_weight == 25
-        assert len(minimum_spanning_tree) == 11
-        assert Edge(start='A', destination='D', weight=2) in minimum_spanning_tree
-        assert Edge(start='D', destination='E', weight=3) in minimum_spanning_tree
-        assert Edge(start='E', destination='H', weight=2) in minimum_spanning_tree
-        assert Edge(start='H', destination='G', weight=2) in minimum_spanning_tree
-        assert Edge(start='G', destination='J', weight=1) in minimum_spanning_tree
-        assert Edge(start='H', destination='I', weight=3) in minimum_spanning_tree
-        assert Edge(start='I', destination='L', weight=3) in minimum_spanning_tree
-        assert Edge(start='I', destination='F', weight=2) in minimum_spanning_tree
-        assert Edge(start='F', destination='C', weight=1) in minimum_spanning_tree
-        assert Edge(start='C', destination='B', weight=4) in minimum_spanning_tree
-        assert Edge(start='J', destination='K', weight=2) in minimum_spanning_tree
+        assert search_result.overall_weight == 25
+        assert len(search_result) == 11
+        assert Edge(start='A', destination='D', weight=2) in search_result
+        assert Edge(start='D', destination='E', weight=3) in search_result
+        assert Edge(start='E', destination='H', weight=2) in search_result
+        assert Edge(start='H', destination='G', weight=2) in search_result
+        assert Edge(start='G', destination='J', weight=1) in search_result
+        assert Edge(start='H', destination='I', weight=3) in search_result
+        assert Edge(start='I', destination='L', weight=3) in search_result
+        assert Edge(start='I', destination='F', weight=2) in search_result
+        assert Edge(start='F', destination='C', weight=1) in search_result
+        assert Edge(start='C', destination='B', weight=4) in search_result
+        assert Edge(start='J', destination='K', weight=2) in search_result

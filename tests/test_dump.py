@@ -24,7 +24,7 @@ from io import StringIO
 
 from graphlib.dump import dump_graph, dump_minimum_spanning_tree, dump_shortest_path
 from graphlib.graph import AdjacencySetGraph, GraphType
-from graphlib.algorithms import Edge, MinimumSpanningTree, ShortestPathSearchResult
+from graphlib.algorithms import Edge, MinimumSpanningTreeAlgorithm, MinimumSpanningTreeSearchResult, ShortestPathSearchResult
 
 class TestDumpGraph: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :method:
@@ -116,24 +116,50 @@ class TestDumpMinimumSpanningTree:
     graphlib.dump.dump_minimum_spanning_tree.
     """
 
-    def test_minimum_spanning_tree_is_dumped_properly(self):
+    def test_minimum_spanning_tree_is_dumped_properly_for_algorithm_with_search_start(self):
         edges = (
             Edge(start='A', destination='B', weight=3),
             Edge(start='B', destination='C', weight=2),
             Edge(start='C', destination='D', weight=5),
             Edge(start='C', destination='E', weight=4),
         )
-        minimum_spanning_tree = MinimumSpanningTree('A', edges)
+        minimum_spanning_tree = MinimumSpanningTreeSearchResult(MinimumSpanningTreeAlgorithm.PRIM, 'A', edges)
         with StringIO() as output:
             dump_minimum_spanning_tree(minimum_spanning_tree, output)
             result = output.getvalue()
         
         assert result == """
 Minimum spanning tree (search start A)
+Search algorithm MinimumSpanningTreeAlgorithm.PRIM
 Overall weight 14
 Edges:
  - A -> B (weight = 3)
  - B -> C (weight = 2)
  - C -> D (weight = 5)
  - C -> E (weight = 4)
+"""
+
+    def test_minimum_spanning_tree_is_dumped_properly_for_algorithm_without_search_start(self):
+        edges = (
+            Edge(start='A', destination='B', weight=7),
+            Edge(start='B', destination='C', weight=3),
+            Edge(start='C', destination='D', weight=5),
+            Edge(start='C', destination='E', weight=4),
+            Edge(start='E', destination='F', weight=6),
+        )
+        minimum_spanning_tree = MinimumSpanningTreeSearchResult(MinimumSpanningTreeAlgorithm.KRUSKAL, None, edges)
+        with StringIO() as output:
+            dump_minimum_spanning_tree(minimum_spanning_tree, output)
+            result = output.getvalue()
+        
+        assert result == """
+Minimum spanning tree
+Search algorithm MinimumSpanningTreeAlgorithm.KRUSKAL
+Overall weight 25
+Edges:
+ - A -> B (weight = 7)
+ - B -> C (weight = 3)
+ - C -> D (weight = 5)
+ - C -> E (weight = 4)
+ - E -> F (weight = 6)
 """

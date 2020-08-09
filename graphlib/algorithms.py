@@ -22,7 +22,8 @@
 
 from collections import deque
 from dataclasses import dataclass
-from typing import Dict, Sequence, Tuple
+from enum import Enum, unique
+from typing import Dict, Optional, Sequence, Tuple
 
 from graphlib.graph import AbstractGraph, Edge, GraphType
 from graphlib.util import AutoIncrement, PriorityQueue, QueueableItem
@@ -106,15 +107,40 @@ class ShortestPathSearchResult:
         return sum(map(lambda edge: edge.weight, self.path))
 
 
-@dataclass(frozen=True)
-class MinimumSpanningTree:
-    """Immutable structure whose instances will representing minimum spanning
-    trees.
-
-    The start attribute carries the vertex where the search whose result is
-    represented by this object started.
+@unique
+class MinimumSpanningTreeAlgorithm(Enum):
+    """Enumeration defining types of minumum spanning tree algorithms.
     """
-    search_start: str
+
+    PRIM = 1
+
+    KRUSKAL = 2
+
+
+@dataclass(frozen=True)
+class MinimumSpanningTreeSearchRequest:
+    """Immutable structure whose instances represent requests to find a minimum
+    spanning tree.
+
+    The search start attribute carries the vertex where the search has to start.
+    The attribute is optional - it should not be used for algorithms not using any
+    start (e.g. Kruskal's algorithm).
+    """
+    graph: AbstractGraph
+    algorithm: MinimumSpanningTreeAlgorithm
+    search_start: Optional[str]
+
+
+@dataclass(frozen=True)
+class MinimumSpanningTreeSearchResult:
+    """Immutable structure whose instances represent minimum spanning trees.
+
+    The search start attribute carries the vertex where the search whose result
+    is represented by this object started. The attribute is optional - it is not
+    used for algorithms not using any start (e.g. Kruskal's algorithm).
+    """
+    algorithm: MinimumSpanningTreeAlgorithm
+    search_start: Optional[str]
     edges: Tuple[Edge, ...]
 
     @property
@@ -400,13 +426,27 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
     return distance_table.backtrack_shortest_path(request.destination)
 
 
-def find_minimum_spanning_tree(graph: AbstractGraph, start: str) -> MinimumSpanningTree:
-    explored_vertices = {start}
+def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
+    """Finds and returns a minimum spanning tree for the graph carries by the given
+    search request.
+
+    Args:
+        request (MinimumSpanningTreeSearchRequest): Search request carrying the graph,
+                                                    the search algorithm to be applied,
+                                                    and the optional starting vertex (if
+                                                    applicable for the algorithm to be
+                                                    applied).
+
+    Returns:
+        MinimumSpanningTreeSearchResult: The search result.
+    """
+    graph = request.graph
+    explored_vertices = {request.search_start}
     sequence = AutoIncrement()
     queue = PriorityQueue()
     result = set()
 
-    for edge in graph.get_outgoing_edges(start):
+    for edge in graph.get_outgoing_edges(request.search_start):
         item = QueueableItem(sequence.next_value_as_str(), edge.weight, edge)
         queue.enqueue(item)
 
@@ -422,4 +462,4 @@ def find_minimum_spanning_tree(graph: AbstractGraph, start: str) -> MinimumSpann
             item = QueueableItem(sequence.next_value_as_str(), adjacent_edge.weight, adjacent_edge)
             queue.enqueue(item)
 
-    return MinimumSpanningTree(start, tuple(result))
+    return MinimumSpanningTreeSearchResult(request.algorithm, request.search_start, tuple(result))
