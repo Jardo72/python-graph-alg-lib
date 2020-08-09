@@ -133,7 +133,8 @@ class MinimumSpanningTreeSearchRequest:
 
 @dataclass(frozen=True)
 class MinimumSpanningTreeSearchResult:
-    """Immutable structure whose instances represent minimum spanning trees.
+    """Immutable structure whose instance represents the result of a search for
+    minimum spanning tree.
 
     The search start attribute carries the vertex where the search whose result
     is represented by this object started. The attribute is optional - it is not
