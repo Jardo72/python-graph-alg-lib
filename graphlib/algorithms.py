@@ -26,7 +26,7 @@ from enum import Enum, unique
 from typing import Dict, Optional, Sequence, Tuple
 
 from graphlib.graph import AbstractGraph, Edge, GraphType
-from graphlib.util import AutoIncrement, PriorityQueue, QueueableItem
+from graphlib.util import QueueableItem, RepriorizablePriorityQueue, SimplePriorityQueue
 
 
 def sort_topologically(graph: AbstractGraph) -> Sequence[str]:
@@ -366,8 +366,8 @@ def _build_unweighted_distance_table(request: ShortestPathSearchRequest) -> _Dis
 
 def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _DistanceTable:
     distance_table = _DistanceTable(request.start)
+    queue = RepriorizablePriorityQueue()
     explored_vertices = {request.start}
-    queue = PriorityQueue()
     graph = request.graph
 
     for adjacent_vertex in request.graph.get_adjacent_vertices(request.start):
@@ -443,24 +443,20 @@ def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> Min
     """
     graph = request.graph
     explored_vertices = {request.search_start}
-    sequence = AutoIncrement()
-    queue = PriorityQueue()
+    queue = SimplePriorityQueue()
     result = set()
 
     for edge in graph.get_outgoing_edges(request.search_start):
-        item = QueueableItem(sequence.next_value_as_str(), edge.weight, edge)
-        queue.enqueue(item)
+        queue.enqueue(edge.weight, edge)
 
     while not queue.empty() and len(explored_vertices) < graph.vertex_count:
-        item = queue.dequeue()
-        current_edge = item.value
+        current_edge = queue.dequeue()
         current_vertex = current_edge.destination
         if current_vertex in explored_vertices:
             continue
         explored_vertices.add(current_vertex)
         result.add(current_edge)
         for adjacent_edge in graph.get_outgoing_edges(current_vertex):
-            item = QueueableItem(sequence.next_value_as_str(), adjacent_edge.weight, adjacent_edge)
-            queue.enqueue(item)
+            queue.enqueue(adjacent_edge.weight, adjacent_edge)
 
     return MinimumSpanningTreeSearchResult(request.algorithm, request.search_start, tuple(result))

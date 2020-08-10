@@ -22,21 +22,100 @@
 
 from pytest import raises
 
-from graphlib.util import AutoIncrement, PriorityQueue, QueueableItem
+from graphlib.util import QueueableItem, RepriorizablePriorityQueue, SimplePriorityQueue
 
 
-class TestPriorityQueue: # pylint: disable=R0201,C0116
+class TestSimplePriorityQueue: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the class :class:
-    graphlib.util.PriorityQueue.
+    graphlib.util.SimplePriorityQueue.
     """
 
     def test_virgin_priority_queue_is_empty(self):
-        queue = PriorityQueue()
+        queue = SimplePriorityQueue()
         assert queue.empty
 
+    def test_priority_queue_with_elements_is_not_empty(self):
+        queue = SimplePriorityQueue()
+
+        queue.enqueue(priority=4, item='D')
+        assert not queue.empty()
+
+        queue.enqueue(priority=5, item='A')
+        assert not queue.empty()
+
+        queue.enqueue(priority=3, item='B', )
+        assert not queue.empty()
+
+        queue.dequeue()
+        assert not queue.empty()
+
+        queue.dequeue()
+        assert not queue.empty()
+
+    def test_priority_queue_after_removal_of_last_element_is_empty(self):
+        queue = SimplePriorityQueue()
+
+        queue.enqueue(priority=5, item='A')
+        queue.enqueue(priority=3, item='B')
+        queue.dequeue()
+        queue.enqueue(priority=4, item='C')
+        queue.dequeue()
+        queue.dequeue()
+        assert queue.empty()
+
+        queue.enqueue(priority=2, item='D')
+        queue.dequeue()
+        assert queue.empty()
+
+        queue.enqueue(priority=3, item='E')
+        queue.enqueue(priority=1, item='F')
+        queue.dequeue()
+        queue.dequeue()
+        assert queue.empty()
+
+    def test_dequeing_from_priority_queue_reflects_priority(self):
+        queue = SimplePriorityQueue()
+        queue.enqueue(priority=4, item='D')
+        queue.enqueue(priority=5, item='A')
+        queue.enqueue(priority=3, item='B')
+        queue.enqueue(priority=7, item='C')
+
+        assert queue.dequeue() == 'B'
+        assert queue.dequeue() == 'D'
+
+        queue.enqueue(priority=1, item='E')
+
+        assert queue.dequeue() == 'E'
+        assert queue.dequeue() == 'A'
+        assert queue.dequeue() == 'C'
+
+    def test_attempt_to_deque_from_virgin_queue_leads_to_error(self):
+        queue = SimplePriorityQueue()
+        with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
+            queue.dequeue()
+
+    def test_attempt_to_deque_from_empty_queue_leads_to_error(self):
+        queue = SimplePriorityQueue()
+        queue.enqueue(priority=5, item='A')
+        queue.enqueue(priority=4, item='B')
+        queue.dequeue()
+        queue.dequeue()
+
+        with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
+            queue.dequeue()
+
+
+class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the class :class:
+    graphlib.util.RepriorizablePriorityQueue.
+    """
+
+    def test_virgin_priority_queue_is_empty(self):
+        queue = RepriorizablePriorityQueue()
+        assert queue.empty
 
     def test_priority_queue_with_elements_is_not_empty(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
 
         queue.enqueue(QueueableItem('D', 4))
         assert not queue.empty()
@@ -53,9 +132,8 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
         queue.dequeue()
         assert not queue.empty()
 
-
     def test_priority_queue_after_removal_of_last_element_is_empty(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
 
         queue.enqueue(QueueableItem('A', 5))
         queue.enqueue(QueueableItem('B', 3))
@@ -75,9 +153,8 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
         queue.dequeue()
         assert queue.empty()
 
-
     def test_dequeing_from_priority_queue_reflects_priority(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
         queue.enqueue(QueueableItem('D', 4))
         queue.enqueue(QueueableItem('A', 5))
         queue.enqueue(QueueableItem('B', 3))
@@ -92,9 +169,8 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
         assert queue.dequeue() == QueueableItem('A', 5)
         assert queue.dequeue() == QueueableItem('C', 7)
 
-
     def test_dequeing_from_priority_queue_reflects_modification_of_priority(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
         queue.enqueue(QueueableItem('D', 4))
         queue.enqueue(QueueableItem('A', 5))
         queue.enqueue(QueueableItem('B', 3))
@@ -107,9 +183,8 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
         assert queue.dequeue() == QueueableItem('B', 3)
         assert queue.dequeue() == QueueableItem('A', 5)
 
-
     def test_items_with_modified_priority_are_counted_just_once(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
         queue.enqueue(QueueableItem('A', 5))
         queue.enqueue(QueueableItem('B', 4))
         queue.enqueue(QueueableItem('A', 3))
@@ -121,12 +196,12 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
         assert queue.empty()
 
     def test_attempt_to_deque_from_virgin_queue_leads_to_error(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
 
     def test_attempt_to_deque_from_empty_queue_leads_to_error(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
         queue.enqueue(QueueableItem('A', 5))
         queue.enqueue(QueueableItem('B', 4))
         queue.dequeue()
@@ -136,7 +211,7 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
             queue.dequeue()
 
     def test_attempt_to_deque_from_empty_queue_after_reprioritization_leads_to_error(self):
-        queue = PriorityQueue()
+        queue = RepriorizablePriorityQueue()
         queue.enqueue(QueueableItem('A', 7))
         queue.enqueue(QueueableItem('B', 4))
         queue.dequeue()
@@ -145,45 +220,3 @@ class TestPriorityQueue: # pylint: disable=R0201,C0116
 
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
-
-
-class TestAutoIncrement:
-    """Collection of test methods exercising the class :class:
-    graphlib.util.AutoIncrement.
-    """
-
-    def test_next_value_returns_proper_values_if_default_initial_value_is_used(self):
-        sequence = AutoIncrement()
-
-        assert sequence.next_value() == 1
-        assert sequence.next_value() == 2
-        assert sequence.next_value() == 3
-
-    def test_next_value_as_str_returns_proper_values_if_default_initial_value_is_used(self):
-        sequence = AutoIncrement()
-
-        assert sequence.next_value_as_str() == '1'
-        assert sequence.next_value_as_str() == '2'
-        assert sequence.next_value_as_str() == '3'
-
-    def test_next_value_returns_proper_values_if_custom_initial_value_is_used(self):
-        sequence = AutoIncrement(5)
-
-        assert sequence.next_value() == 5
-        assert sequence.next_value() == 6
-        assert sequence.next_value() == 7
-
-    def test_next_value_as_str_returns_proper_values_if_custom_initial_value_is_used(self):
-        sequence = AutoIncrement(8)
-
-        assert sequence.next_value_as_str() == '8'
-        assert sequence.next_value_as_str() == '9'
-        assert sequence.next_value_as_str() == '10'
-
-    def test_combination_of_generation_methods_does_not_break_the_sequence(self):
-        sequence = AutoIncrement()
-
-        assert sequence.next_value() == 1
-        assert sequence.next_value_as_str() == '2'
-        assert sequence.next_value() == 3
-        assert sequence.next_value_as_str() == '4'
