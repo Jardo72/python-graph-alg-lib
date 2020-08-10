@@ -427,20 +427,7 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
     return distance_table.backtrack_shortest_path(request.destination)
 
 
-def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
-    """Finds and returns a minimum spanning tree for the graph carries by the given
-    search request.
-
-    Args:
-        request (MinimumSpanningTreeSearchRequest): Search request carrying the graph,
-                                                    the search algorithm to be applied,
-                                                    and the optional starting vertex (if
-                                                    applicable for the algorithm to be
-                                                    applied).
-
-    Returns:
-        MinimumSpanningTreeSearchResult: The search result.
-    """
+def _find_mst_prim(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
     graph = request.graph
     explored_vertices = {request.search_start}
     queue = SimplePriorityQueue()
@@ -460,3 +447,35 @@ def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> Min
             queue.enqueue(adjacent_edge.weight, adjacent_edge)
 
     return MinimumSpanningTreeSearchResult(request.algorithm, request.search_start, tuple(result))
+
+
+def _find_mst_kruskal(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
+    message = "Kruskal's algorithm not implemented yet."
+    raise NotImplementedError(message)
+
+
+def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
+    """Finds and returns a minimum spanning tree for the graph carries by the given
+    search request.
+
+    Args:
+        request (MinimumSpanningTreeSearchRequest): Search request carrying the graph,
+                                                    the search algorithm to be applied,
+                                                    and the optional starting vertex (if
+                                                    applicable for the algorithm to be
+                                                    applied).
+
+    Returns:
+        MinimumSpanningTreeSearchResult: The search result.
+    """
+    if request.algorithm == MinimumSpanningTreeAlgorithm.PRIM and request.search_start is None:
+        message = "Prim's algorithm is requested, but starting vertex is undefined."
+        raise ValueError(message)
+
+    if request.algorithm == MinimumSpanningTreeAlgorithm.PRIM:
+        return _find_mst_prim(request)
+    elif request.algorithm == MinimumSpanningTreeAlgorithm.KRUSKAL:
+        return _find_mst_kruskal(request)
+    else:
+        message = f'Unexpected minimum spanning tree algorithm: {request.algorithm}.'
+        raise ValueError(message)

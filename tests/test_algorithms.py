@@ -856,3 +856,13 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='F', destination='C', weight=1) in search_result
         assert Edge(start='C', destination='B', weight=4) in search_result
         assert Edge(start='J', destination='K', weight=2) in search_result
+
+    def test_request_for_prims_algorithm_without_start_vertex_leads_to_error(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 3)
+        graph.add_edge('B', 'C', 7)
+        graph.add_edge('A', 'C', 2)
+
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.PRIM)
+        with raises(ValueError, match="Prim's algorithm is requested, but starting vertex is undefined."):
+            find_minimum_spanning_tree(search_request)
