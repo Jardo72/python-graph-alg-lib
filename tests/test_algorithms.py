@@ -857,7 +857,6 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='C', destination='B', weight=4) in search_result
         assert Edge(start='J', destination='K', weight=2) in search_result
 
-    @mark.skip('Functionality not implemented yet')
     def test_kruskals_algorithm_01(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 2)

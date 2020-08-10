@@ -257,6 +257,23 @@ class AbstractGraph(ABC):
             result.append(Edge(vertex, adjacent_vertex, weight))
         return tuple(result)
 
+    # TODO:
+    # - unit tests are missing for this method
+    # - we should test the method for both directed and undirected graphs
+    def get_all_edges(self) -> Tuple[Edge, ...]:
+        """Creates and returns a new tuple containing all edges involved in the graph
+        represented by this object.
+
+        Returns:
+            Tuple[Edge, ...]: New tuple containing all edges involved in the graph
+                              represented by this object.
+        """
+        result = set()
+        for vertex in self.get_sorted_vertices():
+            for edge in self.get_outgoing_edges(vertex):
+                result.add(edge)
+        return tuple(result)
+
     @abstractmethod
     def add_edge(self, vertex_one: str, vertex_two: str, weight: int = 1):
         """Adds an edge connecting the given pair of vertices to this graph. If

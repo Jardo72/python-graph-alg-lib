@@ -450,8 +450,22 @@ def _find_mst_prim(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanning
 
 
 def _find_mst_kruskal(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
-    message = "Kruskal's algorithm not implemented yet."
-    raise NotImplementedError(message)
+    covered_vertices = set()
+    edge_set = set()
+    queue = SimplePriorityQueue()
+    for edge in request.graph.get_all_edges():
+        if edge.start < edge.destination:
+            queue.enqueue(edge.weight, edge)
+
+    # TODO:
+    # - prevention of cycles is missing
+    while not queue.empty() and len(edge_set) < request.graph.vertex_count - 1:
+        edge = queue.dequeue()
+        edge_set.add(edge)
+        covered_vertices.add(edge.start)
+        covered_vertices.add(edge.destination)
+
+    return MinimumSpanningTreeSearchResult(request.algorithm, None, tuple(edge_set))
 
 
 def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
