@@ -471,6 +471,9 @@ def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> Min
     if request.algorithm == MinimumSpanningTreeAlgorithm.PRIM and request.search_start is None:
         message = "Prim's algorithm is requested, but starting vertex is undefined."
         raise ValueError(message)
+    if request.algorithm == MinimumSpanningTreeAlgorithm.KRUSKAL and request.search_start is not None:
+        message = "Kruskal's algorithm is requested, but starting vertex is specified."
+        raise ValueError(message)
 
     if request.algorithm == MinimumSpanningTreeAlgorithm.PRIM:
         return _find_mst_prim(request)

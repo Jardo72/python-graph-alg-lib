@@ -22,7 +22,7 @@
 
 from itertools import permutations
 
-from pytest import raises
+from pytest import mark, raises
 
 from graphlib.algorithms import MinimumSpanningTreeAlgorithm, ShortestPathSearchRequest, ShortestPathSearchResult
 from graphlib.algorithms import MinimumSpanningTreeSearchRequest, MinimumSpanningTreeSearchResult
@@ -857,6 +857,47 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='C', destination='B', weight=4) in search_result
         assert Edge(start='J', destination='K', weight=2) in search_result
 
+    @mark.skip('Functionality not implemented yet')
+    def test_kruskals_algorithm_01(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 2)
+        graph.add_edge('A', 'C', 3)
+        graph.add_edge('A', 'D', 4)
+        graph.add_edge('B', 'C', 3)
+        graph.add_edge('B', 'E', 1)
+        graph.add_edge('C', 'D', 6)
+        graph.add_edge('C', 'E', 2)
+        graph.add_edge('C', 'F', 2)
+        graph.add_edge('C', 'G', 4)
+        graph.add_edge('D', 'G', 1)
+        graph.add_edge('E', 'F', 5)
+        graph.add_edge('F', 'G', 2)
+
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL)
+        search_result = find_minimum_spanning_tree(search_request)
+
+        assert len(search_result) == 6
+        assert Edge(start='A', destination='B', weight=2) in search_result
+        assert Edge(start='B', destination='E', weight=1) in search_result
+        assert Edge(start='C', destination='E', weight=2) in search_result
+        assert Edge(start='C', destination='F', weight=2) in search_result
+        assert Edge(start='F', destination='G', weight=2) in search_result
+        assert Edge(start='D', destination='G', weight=1) in search_result
+
+    @mark.skip('Test case not implemented yet')
+    def test_kruskals_algorithm_02(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL)
+        search_result = find_minimum_spanning_tree(search_request)
+
+    @mark.skip('Test case not implemented yet')
+    def test_kruskals_algorithm_03(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL)
+        search_result = find_minimum_spanning_tree(search_request)
+
     def test_request_for_prims_algorithm_without_start_vertex_leads_to_error(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 3)
@@ -865,4 +906,14 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
 
         search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.PRIM)
         with raises(ValueError, match="Prim's algorithm is requested, but starting vertex is undefined."):
+            find_minimum_spanning_tree(search_request)
+
+    def test_request_for_kruskals_algorithm_with_start_vertex_leads_to_error(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 3)
+        graph.add_edge('B', 'C', 7)
+        graph.add_edge('A', 'C', 2)
+
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL, 'A')
+        with raises(ValueError, match="Kruskal's algorithm is requested, but starting vertex is specified."):
             find_minimum_spanning_tree(search_request)
