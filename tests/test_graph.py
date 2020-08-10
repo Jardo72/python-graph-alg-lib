@@ -203,7 +203,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         assert ('B', 'F') == graph.get_adjacent_vertices('E'), 'E'
         assert ('D', 'E') == graph.get_adjacent_vertices('F'), 'F'
 
-    def test_get_outgoing_edges_for_existent_vertex_returns_proper_set_of_edges(self):
+    def test_get_outgoing_edges_for_existent_vertex_returns_proper_tuple_of_edges(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 3)
@@ -258,6 +258,38 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
 
         with raises(ValueError, match='There is no edge from B to A.'):
             graph.get_edge_weight('B', 'A')
+
+    def test_get_all_edges_for_directed_graph_returns_proper_tuple_of_edges(self):
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B', 3)
+        graph.add_edge('A', 'C', 2)
+        graph.add_edge('B', 'C', 5)
+        graph.add_edge('C', 'D', 7)
+
+        all_edges = graph.get_all_edges()
+        
+        assert Edge(start='A', destination='B', weight=3) in all_edges
+        assert Edge(start='A', destination='C', weight=2) in all_edges
+        assert Edge(start='B', destination='C', weight=5) in all_edges
+        assert Edge(start='C', destination='D', weight=7) in all_edges
+
+    def test_get_all_edges_for_undirected_graph_returns_proper_tuple_of_edges(self):
+        graph = self._create_graph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
+        graph.add_edge('C', 'D')
+
+        all_edges = graph.get_all_edges()
+        
+        for vertex_one, vertex_two in ('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'D'):
+            assert Edge(start=vertex_one, destination=vertex_two, weight=1) in all_edges
+            assert Edge(start=vertex_two, destination=vertex_one, weight=1) in all_edges
+
+    def test_get_all_edges_for_empty_graph_returns_empty_tuple(self):
+        graph = self._create_graph(GraphType.UNDIRECTED)
+
+        assert graph.get_all_edges() == tuple()
 
 
 class TestAdjacencySetGraph(AbstractGraphTestFixture): # pylint: disable=R0201,C0116
