@@ -20,9 +20,10 @@
 """Unit tests for the graphlib.util module.
 """
 
-from pytest import raises
+from pytest import mark, raises
 
 from graphlib.util import QueueableItem, RepriorizablePriorityQueue, SimplePriorityQueue
+from graphlib.util import UnionFind
 
 
 class TestSimplePriorityQueue: # pylint: disable=R0201,C0116
@@ -220,3 +221,76 @@ class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
 
         with raises(IndexError, match=r'Cannot dequeue from empty queue\.'):
             queue.dequeue()
+
+
+class TestUnionFind: # pylint: disable=R0201,C0116
+    """Collection of test methods exercising the class :class:
+    graphlib.util.UnionFind.
+    """
+
+    def test_each_element_has_its_own_subset_in_virgin_union_find_instance(self):
+        union_find = UnionFind(10)
+
+        assert union_find.element_count == union_find.subset_count == 10
+        for element in range(10):
+            assert union_find.find_subset(element) == element
+            assert union_find.subset_size(element) == 1
+
+    def test_union_of_elements_belonging_to_distinct_subsets_returns_true(self):
+        union_find = UnionFind(10)
+
+        for element_one, element_two in (3, 7), (2, 4), (3, 4), (1, 7):
+            assert union_find.union(element_one, element_two) == True
+
+    def test_union_of_elements_belonging_to_distinct_subsets_changes_the_subset_of_one_of_the_elemenets(self):
+        union_find = UnionFind(10)
+
+        for element_one, element_two in (3, 7), (2, 4), (3, 4), (1, 7):
+            original_subset_one = union_find.find_subset(element_one)
+            original_subset_two = union_find.find_subset(element_two)
+
+            union_find.union(element_one, element_two)
+
+            assert union_find.find_subset(element_one) in [original_subset_one, original_subset_two]
+            assert union_find.find_subset(element_two) in [original_subset_one, original_subset_two]
+            assert union_find.find_subset(element_one) == union_find.find_subset(element_two)
+
+    def test_union_of_elements_belonging_to_distinct_subsets_decrements_number_of_subsets(self):
+        union_find = UnionFind(10)
+
+        for element_one, element_two in (3, 7), (2, 4), (3, 4), (1, 7):
+            subset_count_before = union_find.subset_count
+            union_find.union(element_one, element_two)
+            assert union_find.subset_count == subset_count_before - 1
+
+    def test_union_of_elements_belonging_to_distinct_subsets_is_reflected_by_size_of_the_merged_subset(self):
+        union_find = UnionFind(10)
+
+        union_find.union(3, 7)
+        assert union_find.subset_size(3) == union_find.subset_size(7) == 2
+
+        union_find.union(2, 4)
+        assert union_find.subset_size(2) == union_find.subset_size(4) == 2
+
+        union_find.union(3, 4)
+        assert union_find.subset_size(3) == union_find.subset_size(4) == 4
+
+    def test_union_of_elements_already_belonging_to_the_same_subset_returns_false(self):
+        union_find = UnionFind(10)
+        union_find.union(1, 3)
+
+        assert union_find.union(1, 3) == False
+
+    @mark.skip('Test case not implemented yet')
+    def test_union_of_elements_already_belonging_to_the_same_subset_does_not_change_the_subset_of_the_elements(self):
+        union_find = UnionFind(10)
+        union_find.union(4, 6)
+
+    def test_union_of_elements_already_belonging_to_the_same_subset_does_not_change_the_number_of_subsets(self):
+        union_find = UnionFind(10)
+        union_find.union(3, 7)
+
+        subset_count_before = union_find.subset_count
+        union_find.union(3, 7)
+
+        assert union_find.subset_count == subset_count_before

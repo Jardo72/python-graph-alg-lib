@@ -162,3 +162,97 @@ class RepriorizablePriorityQueue(_AbstractPriorityQueue):
             return queue_entry.item
         message = 'Cannot dequeue from empty queue.'
         raise IndexError(message)
+
+
+class UnionFind:
+    """Simple implementation of union-find (aka disjoint-set) data structure.
+    """
+
+    def __init__(self, size: int):
+        """Constructs a new instance of union-find with the given capacity.
+
+        Args:
+            size (int): The number of elements the constructed instance has to support.
+        """
+        self._element_count = self._subset_count = size
+        self._element_parents = []
+        self._subset_sizes = []
+        for i in range(size):
+            self._element_parents.append(i)
+            self._subset_sizes.append(1)
+
+    @property
+    def element_count(self) -> int:
+        """Provides the number of elements present in this union-find instance.
+        """
+        return self._element_count
+
+    @property
+    def subset_count(self) -> int:
+        """Provides the number of subsets currently present in this union-find
+        instance.
+        """
+        return self._subset_count
+
+    def find_subset(self, element: int) -> int:
+        """Finds and returns the subset the given element currently belongs to.
+
+        Args:
+            element (int): The element whose subset is to be found.
+
+        Returns:
+            int: The root element of the subset the given element currently belongs to.
+        """
+        if self._element_parents[element] == element:
+            return element
+        
+        parent_element = self._element_parents[element]
+        while self._element_parents[parent_element] != parent_element:
+            parent_element = self._element_parents[parent_element]
+
+        # TODO: we might do the path compression here
+
+        return parent_element
+
+    def subset_size(self, element: int) -> int:
+        """Returns the current size of the subset the given element currently belongs
+        to.
+
+        Args:
+            element (int): The element for which the current size of its subset is to
+                           be returned.
+
+        Returns:
+            int: The current size of the subset the given element currently belongs to.
+        """
+        subset = self.find_subset(element)
+        return self._subset_sizes[subset]
+
+    def union(self, element_one: int, element_two: int) -> bool:
+        """Performs the union of the two subsets the given elements currently belong to.
+
+        This method does nothing if the given elements already belong to the same subset.
+
+        Args:
+            element_one (int): The first of the two elements for which the union is to be
+                               performed.
+            element_two (int): The second of the two elements for which the union is to be
+                               performed.
+
+        Returns:
+            bool: True if the union operation has been performed; False if the two elements
+                  already belong to the same subset, so the union operation is not needed.
+        """
+        subset_one = self.find_subset(element_one)
+        subset_two = self.find_subset(element_two)
+        if subset_one == subset_two:
+            return False
+
+        if self._subset_sizes[subset_one] < self._subset_sizes[subset_two]:
+            self._subset_sizes[subset_two] += self._subset_sizes[subset_one]
+            self._element_parents[subset_one] = subset_two
+        else:
+            self._subset_sizes[subset_one] += self._subset_sizes[subset_two]
+            self._element_parents[subset_two] = subset_one
+        self._subset_count -= 1
+        return True

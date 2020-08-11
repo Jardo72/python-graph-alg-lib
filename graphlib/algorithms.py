@@ -375,28 +375,22 @@ def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _Dista
         distance_table.update(adjacent_vertex, request.start, weight)
         item = QueueableItem(key=adjacent_vertex, priority=weight, value=weight)
         queue.enqueue(item)
-        # print(f'{adjacent_vertex} added to the queue')
 
     while not queue.empty():
         item = queue.dequeue()
         current_vertex = item.key
         current_distance_from_start = item.value
         explored_vertices.add(current_vertex)
-        # print(f'Adding vertex {current_vertex} to explored vertices')
         for adjacent_vertex in graph.get_adjacent_vertices(current_vertex):
             if adjacent_vertex in explored_vertices:
-                # print(f'Adjacent vertex {adjacent_vertex} already explored')
                 continue
-            # print(f'Adjacent vertex {adjacent_vertex} not explored yet')
             weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
             adjacent_distance_from_start = current_distance_from_start + weight
             if distance_table.update(adjacent_vertex, current_vertex, adjacent_distance_from_start):
-                # print(f'Distance table updated for {adjacent_vertex}')
                 item = QueueableItem(key=adjacent_vertex,
                                      priority=adjacent_distance_from_start,
                                      value=adjacent_distance_from_start)
                 queue.enqueue(item)
-                # print(f'{adjacent_vertex} added to the queue')
 
     return distance_table
 
@@ -482,18 +476,16 @@ def find_minimum_spanning_tree(request: MinimumSpanningTreeSearchRequest) -> Min
     Returns:
         MinimumSpanningTreeSearchResult: The search result.
     """
-    search_start = request.search_start
-    algorithm = request.algorithm
-    if algorithm == MinimumSpanningTreeAlgorithm.PRIM and search_start is None:
-        message = "Prim's algorithm is requested, but starting vertex is undefined."
-        raise ValueError(message)
-    if algorithm == MinimumSpanningTreeAlgorithm.KRUSKAL and search_start is not None:
-        message = "Kruskal's algorithm is requested, but starting vertex is specified."
-        raise ValueError(message)
-
     if request.algorithm == MinimumSpanningTreeAlgorithm.PRIM:
+        if request.search_start is None:
+            message = "Prim's algorithm is requested, but starting vertex is undefined."
+            raise ValueError(message)
         return _find_mst_prim(request)
+    
     if request.algorithm == MinimumSpanningTreeAlgorithm.KRUSKAL:
+        if request.search_start is not None:
+            message = "Kruskal's algorithm is requested, but starting vertex is specified."
+            raise ValueError(message)
         return _find_mst_kruskal(request)
 
     message = f'Unexpected minimum spanning tree algorithm: {request.algorithm}.'
