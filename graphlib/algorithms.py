@@ -27,6 +27,7 @@ from typing import Dict, Optional, Sequence, Tuple
 
 from graphlib.graph import AbstractGraph, Edge, GraphType
 from graphlib.util import QueueableItem, RepriorizablePriorityQueue, SimplePriorityQueue
+from graphlib.util import UnionFind
 
 
 def sort_topologically(graph: AbstractGraph) -> Sequence[str]:
@@ -208,6 +209,8 @@ class _DistanceTableEntry:
 
 
 class _DistanceTable:
+    """Distance table supporting the implementation of Dijkstra's algorithm.
+    """
 
     def __init__(self, starting_vertex: str):
         """Constructs a new distance table with the given starting vertex.
@@ -421,6 +424,71 @@ def find_shortest_path(request: ShortestPathSearchRequest) -> ShortestPathSearch
     return distance_table.backtrack_shortest_path(request.destination)
 
 
+class _KruskalsAlgorithmSupport:
+    """Internal helper class supporting the implementation of Kruskal's minimum spanning
+    tree algorithm.
+    """
+
+    def __init__(self, vertex_count: int):
+        """Constructs a new instance of Kruskal's algorithm support for a graph with the
+        given number of vertices.
+
+        Args:
+            vertex_count (int): Number of vertices involved in the graph for which the
+                                minimum spanning tree is going to be searched.
+        """
+        self._sequence = 0
+        self._vertex_mapping: Dict[str, int] = {}
+        self._union_find = UnionFind(vertex_count)
+
+    def _get_vertex_index(self, vertex: str) -> int:
+        if vertex not in self._vertex_mapping:
+            new_index = self._sequence
+            self._sequence += 1
+            self._vertex_mapping[vertex] = new_index
+            return new_index
+        return self._vertex_mapping[vertex]
+
+    def are_connected(self, vertex_one: str, vertex_two: str) -> bool:
+        """Verifies whethet the given pair of vertices has been already connected.
+
+        Args:
+            vertex_one (str): First of the two vertices to be verified.
+            vertex_two (str): Second of the two vertices to be verified.
+
+        Returns:
+            bool: True if the two vertices have been already connected; False if the
+                  two vertices have not been connected yet.
+        """
+        vertex_one_index = self._get_vertex_index(vertex_one)
+        vertex_two_index = self._get_vertex_index(vertex_two)
+        subset_one = self._union_find.find_subset(vertex_one_index)
+        subset_two = self._union_find.find_subset(vertex_two_index)
+        return subset_one == subset_two
+
+    def connect(self, vertex_one: str, vertex_two: str):
+        """Establishes connection between the given pair of vertices.
+
+        Args:
+            vertex_one (str): First of the two vertices to be connected.
+            vertex_two (str): Second of the two vertices to be connected.
+        """
+        vertex_one_index = self._get_vertex_index(vertex_one)
+        vertex_two_index = self._get_vertex_index(vertex_two)
+        self._union_find.union(vertex_one_index, vertex_two_index)
+
+    def has_disconnected_vertex(self) -> bool:
+        """Verifies whether there is still at least one disconnected vertex.
+
+        If all vertices have been already connected, the algorithm can stop. If there
+        is at least one disconnected vertex, the algorithm has to continue.
+
+        Returns:
+            bool: True if there is at least one disconnected vertex; False otherwise.
+        """
+        return self._union_find.subset_count > 1
+
+
 def _find_mst_prim(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
     graph = request.graph
     explored_vertices = {request.search_start}
@@ -444,20 +512,19 @@ def _find_mst_prim(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanning
 
 
 def _find_mst_kruskal(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanningTreeSearchResult:
-    covered_vertices = set()
-    edge_set = set()
+    algorithm_support = _KruskalsAlgorithmSupport(request.graph.vertex_count)
     queue = SimplePriorityQueue()
+    edge_set = set()
     for edge in request.graph.get_all_edges():
         if edge.start < edge.destination:
             queue.enqueue(edge.weight, edge)
 
-    # TODO:
-    # - prevention of cycles is missing
-    while not queue.empty() and len(edge_set) < request.graph.vertex_count - 1:
+    while not queue.empty() and algorithm_support.has_disconnected_vertex():
         edge = queue.dequeue()
+        if algorithm_support.are_connected(edge.start, edge.destination):
+            continue
+        algorithm_support.connect(edge.start, edge.destination)
         edge_set.add(edge)
-        covered_vertices.add(edge.start)
-        covered_vertices.add(edge.destination)
 
     return MinimumSpanningTreeSearchResult(request.algorithm, None, tuple(edge_set))
 

@@ -69,7 +69,12 @@ class _VertexRegistry:
 
         Args:
             name (str): The name of the vertex whose ID is to be returned.
-            generate_if_unknown (bool, optional): [description]. Defaults to False.
+            generate_if_unknown (bool, optional): True if new ID is to be
+                                                  generated if no ID has been
+                                                  generated for the given vertex
+                                                  yet; False (default) if ValueError
+                                                  is to be raised if there is ID for
+                                                  the given vertex.
 
         Raises:
             ValueError: If this registry does not contain ID for the given
