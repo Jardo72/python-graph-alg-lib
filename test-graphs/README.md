@@ -53,3 +53,8 @@
 
 #### TestMinimumSpanningTreeSearch.test_prims_algorithm_03
 ![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #3](./TestMinimumSpanningTreeSearchPrimThree.png)
+
+### Kruskal's Algorithm
+
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_01
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #1](./TestMinimumSpanningTreeSearchKruskalOne.png)
