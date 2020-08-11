@@ -165,7 +165,7 @@ class RepriorizablePriorityQueue(_AbstractPriorityQueue):
 
 
 class UnionFind:
-    """Simple implementation of union-find (aka disjoint-set) data structure.
+    """Implementation of union-find (aka disjoint-set) data structure with path compression.
     """
 
     def __init__(self, size: int):
@@ -205,14 +205,21 @@ class UnionFind:
         """
         if self._element_parents[element] == element:
             return element
-        
+
         parent_element = self._element_parents[element]
         while self._element_parents[parent_element] != parent_element:
             parent_element = self._element_parents[parent_element]
 
-        # TODO: we might do the path compression here
+        # path compression - set the root element of the subset as parent for all
+        # members of the subset, thus eliminating longer chaining of elements
+        root_element = parent_element
+        parent_element = self._element_parents[element]
+        self._element_parents[element] = root_element
+        while self._element_parents[parent_element] != parent_element:
+            parent_element = self._element_parents[parent_element]
+            self._element_parents[parent_element] = root_element
 
-        return parent_element
+        return root_element
 
     def subset_size(self, element: int) -> int:
         """Returns the current size of the subset the given element currently belongs
