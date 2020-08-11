@@ -20,7 +20,7 @@
 """Unit tests for the graphlib.util module.
 """
 
-from pytest import mark, raises
+from pytest import raises
 
 from graphlib.util import QueueableItem, RepriorizablePriorityQueue, SimplePriorityQueue
 from graphlib.util import UnionFind
@@ -281,10 +281,21 @@ class TestUnionFind: # pylint: disable=R0201,C0116
 
         assert union_find.union(1, 3) == False
 
-    @mark.skip('Test case not implemented yet')
     def test_union_of_elements_already_belonging_to_the_same_subset_does_not_change_the_subset_of_the_elements(self):
         union_find = UnionFind(10)
         union_find.union(4, 6)
+        union_find.union(3, 7)
+        union_find.union(2, 6)
+        union_find.union(1, 8)
+
+        for element_one, element_two in (4, 6), (3, 7), (2, 6), (1, 8):
+            original_subset_one = union_find.find_subset(element_one)
+            original_subset_two = union_find.find_subset(element_two)
+
+            union_find.union(element_one, element_two)
+
+            assert union_find.find_subset(element_one) == original_subset_one
+            assert union_find.find_subset(element_two) == original_subset_two
 
     def test_union_of_elements_already_belonging_to_the_same_subset_does_not_change_the_number_of_subsets(self):
         union_find = UnionFind(10)
@@ -294,3 +305,19 @@ class TestUnionFind: # pylint: disable=R0201,C0116
         union_find.union(3, 7)
 
         assert union_find.subset_count == subset_count_before
+
+    def test_union_of_elements_already_belonging_to_the_same_subset_does_not_change_the_size_of_subsets(self):
+        union_find = UnionFind(10)
+        union_find.union(4, 6)
+        union_find.union(3, 7)
+        union_find.union(2, 6)
+        union_find.union(1, 8)
+
+        for element_one, element_two in (4, 6), (3, 7), (2, 6), (1, 8):
+            original_subset_one_size = union_find.subset_size(element_one)
+            original_subset_two_size = union_find.subset_size(element_two)
+
+            union_find.union(element_one, element_two)
+
+            assert union_find.subset_size(element_one) == original_subset_one_size
+            assert union_find.subset_size(element_two) == original_subset_two_size
