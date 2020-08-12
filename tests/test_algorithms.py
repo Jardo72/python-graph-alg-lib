@@ -22,7 +22,7 @@
 
 from itertools import permutations
 
-from pytest import mark, raises
+from pytest import raises
 
 from graphlib.algorithms import MinimumSpanningTreeAlgorithm, ShortestPathSearchRequest, ShortestPathSearchResult
 from graphlib.algorithms import MinimumSpanningTreeSearchRequest, MinimumSpanningTreeSearchResult
@@ -913,12 +913,47 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='G', destination='H', weight=3) in search_result
         assert Edge(start='A', destination='D', weight=4) in search_result
 
-    @mark.skip('Test case not implemented yet')
     def test_kruskals_algorithm_03(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 3)
+        graph.add_edge('B', 'C', 3)
+        graph.add_edge('A', 'D', 4)
+        graph.add_edge('A', 'E', 2)
+        graph.add_edge('B', 'E', 2)
+        graph.add_edge('C', 'E', 4)
+        graph.add_edge('C', 'F', 8)
+        graph.add_edge('D', 'E', 5)
+        graph.add_edge('E', 'F', 7)
+        graph.add_edge('D', 'G', 6)
+        graph.add_edge('E', 'G', 8)
+        graph.add_edge('E', 'H', 8)
+        graph.add_edge('E', 'I', 7)
+        graph.add_edge('F', 'I', 3)
+        graph.add_edge('G', 'H', 5)
+        graph.add_edge('H', 'I', 2)
+        graph.add_edge('G', 'J', 4)
+        graph.add_edge('G', 'K', 3)
+        graph.add_edge('H', 'K', 4)
+        graph.add_edge('I', 'K', 5)
+        graph.add_edge('I', 'L', 6)
+        graph.add_edge('J', 'K', 5)
+        graph.add_edge('K', 'L', 8)
 
         search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL)
         search_result = find_minimum_spanning_tree(search_request)
+
+        assert len(search_result) == 11
+        assert Edge(start='A', destination='E', weight=2) in search_result
+        assert Edge(start='B', destination='E', weight=2) in search_result
+        assert Edge(start='H', destination='I', weight=2) in search_result
+        assert Edge(start='B', destination='C', weight=3) in search_result
+        assert Edge(start='F', destination='I', weight=3) in search_result
+        assert Edge(start='G', destination='K', weight=3) in search_result
+        assert Edge(start='A', destination='D', weight=4) in search_result
+        assert Edge(start='G', destination='J', weight=4) in search_result
+        assert Edge(start='H', destination='K', weight=4) in search_result
+        assert Edge(start='D', destination='G', weight=6) in search_result
+        assert Edge(start='I', destination='L', weight=6) in search_result
 
     def test_request_for_prims_algorithm_without_start_vertex_leads_to_error(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
