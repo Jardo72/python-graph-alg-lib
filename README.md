@@ -5,7 +5,8 @@ Library of Graph Algorithms for Python is a simple Python library providing impl
 - topological sort
 - shortest path search for unweighted graphs
 - shortest path search for weighted graphs (Dijkstra's algorithm)
-- minimum spanning tree for connected graphs (Prim's algorithm)
+- Prim's minimum spanning tree algorithm (limited to connected graphs)
+- Kruskal's minimum spanning tree algorithm (applicable to both connected and disconnected graphs)
 
 
 ## Runtime Environment, Source Code Organization etc.

@@ -60,5 +60,6 @@
 ![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #1](./TestMinimumSpanningTreeSearchKruskalOne.png)
 
 #### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_02
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #2](./TestMinimumSpanningTreeSearchKruskalTwo.png)
 
 #### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_03

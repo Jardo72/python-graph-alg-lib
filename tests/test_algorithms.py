@@ -883,12 +883,35 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='F', destination='G', weight=2) in search_result
         assert Edge(start='D', destination='G', weight=1) in search_result
 
-    @mark.skip('Test case not implemented yet')
     def test_kruskals_algorithm_02(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 6)
+        graph.add_edge('A', 'C', 5)
+        graph.add_edge('A', 'D', 4)
+        graph.add_edge('B', 'C', 3)
+        graph.add_edge('B', 'E', 2)
+        graph.add_edge('B', 'F', 3)
+        graph.add_edge('C', 'D', 1)
+        graph.add_edge('C', 'F', 2)
+        graph.add_edge('D', 'F', 3)
+        graph.add_edge('D', 'G', 5)
+        graph.add_edge('E', 'F', 1)
+        graph.add_edge('E', 'H', 3)
+        graph.add_edge('F', 'G', 4)
+        graph.add_edge('F', 'H', 4)
+        graph.add_edge('G', 'H', 3)
 
         search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL)
         search_result = find_minimum_spanning_tree(search_request)
+
+        assert len(search_result) == 7
+        assert Edge(start='C', destination='D', weight=1) in search_result
+        assert Edge(start='E', destination='F', weight=1) in search_result
+        assert Edge(start='B', destination='E', weight=2) in search_result
+        assert Edge(start='C', destination='F', weight=2) in search_result
+        assert Edge(start='E', destination='H', weight=3) in search_result
+        assert Edge(start='G', destination='H', weight=3) in search_result
+        assert Edge(start='A', destination='D', weight=4) in search_result
 
     @mark.skip('Test case not implemented yet')
     def test_kruskals_algorithm_03(self):
