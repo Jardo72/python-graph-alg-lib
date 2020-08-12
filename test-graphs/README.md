@@ -45,13 +45,13 @@
 
 ### Prim's Algorithm
 
-#### TestMinimumSpanningTreeSearch.test_prims_algorithm_01
+#### TestMinimumSpanningTreeSearch.test_prims_algorithm_01 (starting vertex = A)
 ![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #1](./TestMinimumSpanningTreeSearchPrimOne.png)
 
-#### TestMinimumSpanningTreeSearch.test_prims_algorithm_02
+#### TestMinimumSpanningTreeSearch.test_prims_algorithm_02 (starting vertex = A)
 ![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #2](./TestMinimumSpanningTreeSearchPrimTwo.png)
 
-#### TestMinimumSpanningTreeSearch.test_prims_algorithm_03
+#### TestMinimumSpanningTreeSearch.test_prims_algorithm_03 (starting vertex = A)
 ![TestMinimumSpanningTreeSearch - Prim's Algorithm Test Case #3](./TestMinimumSpanningTreeSearchPrimThree.png)
 
 ### Kruskal's Algorithm
@@ -64,3 +64,6 @@
 
 #### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_03
 ![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #3](./TestMinimumSpanningTreeSearchKruskalThree.png)
+
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_04
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #4](./TestMinimumSpanningTreeSearchKruskalFour.png)
