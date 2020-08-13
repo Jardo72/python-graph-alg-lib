@@ -28,6 +28,9 @@ from graphlib.graph import AdjacencyMatrixGraph, AdjacencySetGraph, GraphType
 from graphlib.jsondef import build_adjacency_matrix_graph_from_json_string
 from graphlib.jsondef import build_adjacency_set_graph_from_json_string
 
+# pylint: disable=C0116
+
+
 class AbstractGraphBuildingTestFixture(ABC):
     """Abstract test-fixture class that implements test methods common to methods
     building a graph according to JSON definition.
@@ -378,4 +381,3 @@ class TestAdjacencyMatrixGraphBuilding(AbstractGraphBuildingTestFixture):
     @property
     def _expected_graph_class(self):
         return AdjacencyMatrixGraph
-
