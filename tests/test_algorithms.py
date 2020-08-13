@@ -79,7 +79,7 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         assert distance_table.update('D', 'B', 9) == False
         assert distance_table.get_distance_from_start('D') == 8
         assert distance_table.get_predecessor('D') == 'C'
-    
+
     def test_backtracking_reconstructs_proper_shortest_path(self):
         distance_table = _DistanceTable('A')
         distance_table.update('B', 'A', 2)
@@ -238,12 +238,12 @@ class TestShortestPathSearchResult: # pylint: disable=R0201,C0116
         )
         shortest_path = ShortestPathSearchResult(path)
 
-        assert 'A' == shortest_path.start
-        assert 'L' == shortest_path.destination
-        assert 19 == shortest_path.overall_distance
+        assert shortest_path.start == 'A'
+        assert shortest_path.destination == 'L'
+        assert shortest_path.overall_distance == 19
 
 
-class TestShortestPathSearchForUnweightedGraphSuiteOne: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForUnweightedGraphSuiteOne: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for unweighted graphs.
     """
@@ -279,7 +279,7 @@ class TestShortestPathSearchForUnweightedGraphSuiteOne: # pylint: disable=R0201,
         ))
 
 
-class TestShortestPathSearchForUnweightedGraphSuiteTwo: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForUnweightedGraphSuiteTwo: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for unweighted graphs.
     """
@@ -323,7 +323,7 @@ class TestShortestPathSearchForUnweightedGraphSuiteTwo: # pylint: disable=R0201,
         ))
 
 
-class TestShortestPathSearchForUnweightedGraphSuiteThree: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForUnweightedGraphSuiteThree: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for unweighted graphs.
     """
@@ -450,7 +450,7 @@ class TestShortestPathSearchForUnweightedGraphSuiteThree: # pylint: disable=R020
         ))
 
 
-class TestShortestPathSearchForWeightedGraphSuiteOne: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForWeightedGraphSuiteOne: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for weighted graphs.
     """
@@ -474,7 +474,7 @@ class TestShortestPathSearchForWeightedGraphSuiteOne: # pylint: disable=R0201,C0
     def test_path_from_A_to_G(self):
         graph = self._create_tested_graph()
 
-        request = ShortestPathSearchRequest(graph, start = 'A', destination = 'G')
+        request = ShortestPathSearchRequest(graph, start='A', destination='G')
         assert find_shortest_path(request) == ShortestPathSearchResult((
             Edge(start='A', destination='B', weight=2),
             Edge(start='B', destination='C', weight=1),
@@ -522,7 +522,7 @@ class TestShortestPathSearchForWeightedGraphSuiteOne: # pylint: disable=R0201,C0
         ))
 
 
-class TestShortestPathSearchForWeightedGraphSuiteTwo: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForWeightedGraphSuiteTwo: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for weighted graphs.
     """
@@ -574,7 +574,7 @@ class TestShortestPathSearchForWeightedGraphSuiteTwo: # pylint: disable=R0201,C0
         ))
 
 
-class TestShortestPathSearchForWeightedGraphSuiteThree: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForWeightedGraphSuiteThree: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for weighted graphs.
     """
@@ -679,7 +679,7 @@ class TestShortestPathSearchForWeightedGraphSuiteThree: # pylint: disable=R0201,
         ))
 
 
-class TestShortestPathSearchForWeightedGraphSuiteFour: # pylint: disable=R0201,C0116
+class TestShortestPathSearchForWeightedGraphSuiteFour: # pylint: disable=R0201,C0116,C0103
     """Collection of test methods exercising the method :method:
     graphlib.algorithms.find_shortest_path for weighted graphs.
     """

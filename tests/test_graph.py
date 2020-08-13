@@ -159,13 +159,13 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('D', 'F', 3)
         graph.add_edge('F', 'E', 5)
 
-        assert 2 == graph.get_edge_weight('A', 'B'), 'A -> B'
-        assert 3 == graph.get_edge_weight('A', 'C'), 'A -> C'
-        assert 5 == graph.get_edge_weight('B', 'C'), 'B -> C'
-        assert 4 == graph.get_edge_weight('B', 'E'), 'B -> E'
-        assert 7 == graph.get_edge_weight('C', 'D'), 'C -> D'
-        assert 3 == graph.get_edge_weight('D', 'F'), 'D -> F'
-        assert 5 == graph.get_edge_weight('F', 'E'), 'F -> E'
+        assert graph.get_edge_weight('A', 'B') == 2, 'A -> B'
+        assert graph.get_edge_weight('A', 'C') == 3, 'A -> C'
+        assert graph.get_edge_weight('B', 'C') == 5, 'B -> C'
+        assert graph.get_edge_weight('B', 'E') == 4, 'B -> E'
+        assert graph.get_edge_weight('C', 'D') == 7, 'C -> D'
+        assert graph.get_edge_weight('D', 'F') == 3, 'D -> F'
+        assert graph.get_edge_weight('F', 'E') == 5, 'F -> E'
 
     def test_proper_adjacent_vertices_are_returned_for_directed_graph(self):
         # be aware of the fact that this test case also covers vertices that are
@@ -179,12 +179,12 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('D', 'F')
         graph.add_edge('F', 'E')
 
-        assert ('B', 'C') == graph.get_adjacent_vertices('A'), 'A'
-        assert ('C', 'E') == graph.get_adjacent_vertices('B'), 'B'
-        assert ('D', ) == graph.get_adjacent_vertices('C'), 'C'
-        assert ('F', ) == graph.get_adjacent_vertices('D'), 'D'
-        assert () == graph.get_adjacent_vertices('E'), 'E'
-        assert ('E', ) == graph.get_adjacent_vertices('F'), 'F'
+        assert graph.get_adjacent_vertices('A') == ('B', 'C'), 'A'
+        assert graph.get_adjacent_vertices('B') == ('C', 'E'), 'B'
+        assert graph.get_adjacent_vertices('C') == ('D', ), 'C'
+        assert graph.get_adjacent_vertices('D') == ('F', ), 'D'
+        assert graph.get_adjacent_vertices('E') == (), 'E'
+        assert graph.get_adjacent_vertices('F') == ('E', ), 'F'
 
     def test_proper_adjacent_vertices_are_returned_for_undirected_graph(self):
         graph = self._create_graph(GraphType.UNDIRECTED)
@@ -196,12 +196,12 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('D', 'F')
         graph.add_edge('F', 'E')
 
-        assert ('B', 'C') == graph.get_adjacent_vertices('A'), 'A'
-        assert ('A', 'C', 'E') == graph.get_adjacent_vertices('B'), 'B'
-        assert ('A', 'B', 'D') == graph.get_adjacent_vertices('C'), 'C'
-        assert ('C', 'F') == graph.get_adjacent_vertices('D'), 'D'
-        assert ('B', 'F') == graph.get_adjacent_vertices('E'), 'E'
-        assert ('D', 'E') == graph.get_adjacent_vertices('F'), 'F'
+        assert graph.get_adjacent_vertices('A') == ('B', 'C'), 'A'
+        assert graph.get_adjacent_vertices('B') == ('A', 'C', 'E'), 'B'
+        assert graph.get_adjacent_vertices('C') == ('A', 'B', 'D'), 'C'
+        assert graph.get_adjacent_vertices('D') == ('C', 'F'), 'D'
+        assert graph.get_adjacent_vertices('E') == ('B', 'F'), 'E'
+        assert graph.get_adjacent_vertices('F') == ('D', 'E'), 'F'
 
     def test_get_outgoing_edges_for_existent_vertex_returns_proper_tuple_of_edges(self):
         graph = self._create_graph(GraphType.DIRECTED)
@@ -267,7 +267,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('C', 'D', 7)
 
         all_edges = graph.get_all_edges()
-        
+
         assert Edge(start='A', destination='B', weight=3) in all_edges
         assert Edge(start='A', destination='C', weight=2) in all_edges
         assert Edge(start='B', destination='C', weight=5) in all_edges
@@ -281,7 +281,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         graph.add_edge('C', 'D')
 
         all_edges = graph.get_all_edges()
-        
+
         for vertex_one, vertex_two in ('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'D'):
             assert Edge(start=vertex_one, destination=vertex_two, weight=1) in all_edges
             assert Edge(start=vertex_two, destination=vertex_one, weight=1) in all_edges
