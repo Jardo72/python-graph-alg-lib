@@ -379,7 +379,7 @@ def _build_weighted_distance_table(request: ShortestPathSearchRequest) -> _Dista
         item = QueueableItem(key=adjacent_vertex, priority=weight, value=weight)
         queue.enqueue(item)
 
-    while not queue.empty():
+    while queue.is_not_empty():
         item = queue.dequeue()
         current_vertex = item.key
         current_distance_from_start = item.value
@@ -498,7 +498,7 @@ def _find_mst_prim(request: MinimumSpanningTreeSearchRequest) -> MinimumSpanning
     for edge in graph.get_outgoing_edges(request.search_start):
         queue.enqueue(edge.weight, edge)
 
-    while not queue.empty() and len(explored_vertices) < graph.vertex_count:
+    while queue.is_not_empty() and len(explored_vertices) < graph.vertex_count:
         current_edge = queue.dequeue()
         current_vertex = current_edge.destination
         if current_vertex in explored_vertices:
@@ -519,7 +519,7 @@ def _find_mst_kruskal(request: MinimumSpanningTreeSearchRequest) -> MinimumSpann
         if edge.start < edge.destination:
             queue.enqueue(edge.weight, edge)
 
-    while not queue.empty() and algorithm_support.has_disconnected_vertex():
+    while queue.is_not_empty() and algorithm_support.has_disconnected_vertex():
         edge = queue.dequeue()
         if algorithm_support.are_connected(edge.start, edge.destination):
             continue

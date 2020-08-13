@@ -33,25 +33,25 @@ class TestSimplePriorityQueue: # pylint: disable=R0201,C0116
 
     def test_virgin_priority_queue_is_empty(self):
         queue = SimplePriorityQueue()
-        assert queue.empty
+        assert queue.is_not_empty() == False
 
     def test_priority_queue_with_elements_is_not_empty(self):
         queue = SimplePriorityQueue()
 
         queue.enqueue(priority=4, item='D')
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.enqueue(priority=5, item='A')
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.enqueue(priority=3, item='B', )
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.dequeue()
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.dequeue()
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
     def test_priority_queue_after_removal_of_last_element_is_empty(self):
         queue = SimplePriorityQueue()
@@ -62,17 +62,17 @@ class TestSimplePriorityQueue: # pylint: disable=R0201,C0116
         queue.enqueue(priority=4, item='C')
         queue.dequeue()
         queue.dequeue()
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
         queue.enqueue(priority=2, item='D')
         queue.dequeue()
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
         queue.enqueue(priority=3, item='E')
         queue.enqueue(priority=1, item='F')
         queue.dequeue()
         queue.dequeue()
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
     def test_dequeing_from_priority_queue_reflects_priority(self):
         queue = SimplePriorityQueue()
@@ -113,25 +113,25 @@ class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
 
     def test_virgin_priority_queue_is_empty(self):
         queue = RepriorizablePriorityQueue()
-        assert queue.empty
+        assert queue.is_not_empty() == False
 
     def test_priority_queue_with_elements_is_not_empty(self):
         queue = RepriorizablePriorityQueue()
 
         queue.enqueue(QueueableItem('D', 4))
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.enqueue(QueueableItem('A', 5))
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.enqueue(QueueableItem('B', 3))
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.dequeue()
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
         queue.dequeue()
-        assert not queue.empty()
+        assert queue.is_not_empty()
 
     def test_priority_queue_after_removal_of_last_element_is_empty(self):
         queue = RepriorizablePriorityQueue()
@@ -142,17 +142,17 @@ class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
         queue.enqueue(QueueableItem('C', 4))
         queue.dequeue()
         queue.dequeue()
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
         queue.enqueue(QueueableItem('D', 2))
         queue.dequeue()
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
         queue.enqueue(QueueableItem('E', 3))
         queue.enqueue(QueueableItem('F', 1))
         queue.dequeue()
         queue.dequeue()
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
     def test_dequeing_from_priority_queue_reflects_priority(self):
         queue = RepriorizablePriorityQueue()
@@ -194,7 +194,7 @@ class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
         queue.dequeue()
         queue.dequeue()
 
-        assert queue.empty()
+        assert queue.is_not_empty() == False
 
     def test_attempt_to_deque_from_virgin_queue_leads_to_error(self):
         queue = RepriorizablePriorityQueue()

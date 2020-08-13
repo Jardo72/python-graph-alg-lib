@@ -68,14 +68,14 @@ class _AbstractPriorityQueue(ABC): # pylint: disable=R0903
         self._size = 0
 
 
-    def empty(self) -> bool:
-        """Verifies whether this queue is empty.
+    def is_not_empty(self) -> bool:
+        """Verifies whether this queue is not empty.
 
         Returns:
-            bool: True if this queue currrently does not contain any element;
-                  False otherwise.
+            bool: True if this queue currrently contains at least one element;
+                  False if this queue is currently empty.
         """
-        return self._size == 0
+        return self._size > 0
 
 
 class SimplePriorityQueue(_AbstractPriorityQueue):
