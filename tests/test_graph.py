@@ -26,8 +26,10 @@ from pytest import raises
 
 from graphlib.graph import AbstractGraph, AdjacencyMatrixGraph, AdjacencySetGraph, Edge, GraphType
 
+# pylint: disable=R0201,C0116
 
-class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
+
+class AbstractGraphTestFixture(ABC):
     """Abstract test-fixture class that implements test methods common to various
     graph implementations like adjacency matrix or adjacency set.
 
@@ -292,7 +294,7 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
         assert graph.get_all_edges() == tuple()
 
 
-class TestAdjacencySetGraph(AbstractGraphTestFixture): # pylint: disable=R0201,C0116
+class TestAdjacencySetGraph(AbstractGraphTestFixture):
     """Concrete test-fixture for the adjacency set implementation of graph
     (i.e. for the class :class: graph.AdjacencySetGraph).
     """
@@ -304,7 +306,7 @@ class TestAdjacencySetGraph(AbstractGraphTestFixture): # pylint: disable=R0201,C
         return AdjacencySetGraph(graph_type)
 
 
-class TestAdjacencyMatrixGraph(AbstractGraphTestFixture): # pylint: disable=R0201,C0116
+class TestAdjacencyMatrixGraph(AbstractGraphTestFixture):
     """Concrete test-fixture for the adjacency matric implementation of graph
     (i.e. for the :class: graphlib.graph.AdjacencyMatrixGraph).
     """
