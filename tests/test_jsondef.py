@@ -21,6 +21,7 @@
 """
 
 from abc import ABC, abstractproperty
+from typing import Callable, Type
 
 from pytest import raises
 
@@ -42,11 +43,11 @@ class AbstractGraphBuildingTestFixture(ABC):
     """
 
     @abstractproperty
-    def _tested_function(self):
+    def _tested_function(self) -> Callable:
         raise NotImplementedError
 
     @abstractproperty
-    def _expected_graph_class(self):
+    def _expected_graph_class(self) -> Type:
         raise NotImplementedError
 
     def test_directed_weighted_graph_is_built_properly_from_valid_definition(self):
@@ -361,11 +362,11 @@ class TestAdjacencySetGraphBuilding(AbstractGraphBuildingTestFixture):
     """
 
     @property
-    def _tested_function(self):
+    def _tested_function(self) -> Callable:
         return build_adjacency_set_graph_from_json_string
 
     @property
-    def _expected_graph_class(self):
+    def _expected_graph_class(self) -> Type:
         return AdjacencySetGraph
 
 
@@ -375,9 +376,9 @@ class TestAdjacencyMatrixGraphBuilding(AbstractGraphBuildingTestFixture):
     """
 
     @property
-    def _tested_function(self):
+    def _tested_function(self) -> Callable:
         return build_adjacency_matrix_graph_from_json_string
 
     @property
-    def _expected_graph_class(self):
+    def _expected_graph_class(self) -> Type:
         return AdjacencyMatrixGraph
