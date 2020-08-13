@@ -26,7 +26,7 @@ from graphlib.util import QueueableItem, RepriorizablePriorityQueue, SimplePrior
 from graphlib.util import UnionFind
 
 
-class TestSimplePriorityQueue: # pylint: disable=R0201,C0116
+class TestSimplePriorityQueue: # pylint: disable=R0201,C0116,C0121
     """Collection of test methods exercising the class :class:
     graphlib.util.SimplePriorityQueue.
     """
@@ -106,7 +106,7 @@ class TestSimplePriorityQueue: # pylint: disable=R0201,C0116
             queue.dequeue()
 
 
-class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
+class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116,C0121
     """Collection of test methods exercising the class :class:
     graphlib.util.RepriorizablePriorityQueue.
     """
@@ -223,7 +223,7 @@ class TestRepriorizablePriorityQueue: # pylint: disable=R0201,C0116
             queue.dequeue()
 
 
-class TestUnionFind: # pylint: disable=R0201,C0116
+class TestUnionFind: # pylint: disable=R0201,C0116,C0301,C0121
     """Collection of test methods exercising the class :class:
     graphlib.util.UnionFind.
     """

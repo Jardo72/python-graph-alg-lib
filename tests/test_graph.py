@@ -77,56 +77,56 @@ class AbstractGraphTestFixture(ABC): # pylint: disable=R0201,C0116
 
     def test_empty_graph_has_no_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
-        assert 0 == graph.vertex_count, 'Vertex count'
-        assert () == graph.get_sorted_vertices(), 'Sorted vertices'
+        assert graph.vertex_count == 0, 'Vertex count'
+        assert graph.get_sorted_vertices() == (), 'Sorted vertices'
 
     def test_non_empty_graph_returns_proper_number_of_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
 
         graph.add_edge('A', 'B')
-        assert 2 == graph.vertex_count, 'After A -> B'
+        assert graph.vertex_count == 2, 'After A -> B'
 
         graph.add_edge('A', 'C')
-        assert 3 == graph.vertex_count, 'After A -> C'
+        assert graph.vertex_count == 3, 'After A -> C'
 
         graph.add_edge('B', 'C')
-        assert 3 == graph.vertex_count, 'After B -> C'
+        assert graph.vertex_count == 3, 'After B -> C'
 
         graph.add_edge('B', 'E')
-        assert 4 == graph.vertex_count, 'After B -> E'
+        assert graph.vertex_count == 4, 'After B -> E'
 
         graph.add_edge('C', 'D')
-        assert 5 == graph.vertex_count, 'After C -> D'
+        assert graph.vertex_count == 5, 'After C -> D'
 
         graph.add_edge('D', 'F')
-        assert 6 == graph.vertex_count, 'After D -> F'
+        assert graph.vertex_count == 6, 'After D -> F'
 
         graph.add_edge('F', 'E')
-        assert 6 == graph.vertex_count, 'After F -> E'
+        assert graph.vertex_count == 6, 'After F -> E'
 
     def test_non_empty_graph_returns_proper_list_of_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
 
         graph.add_edge('A', 'B')
-        assert ('A', 'B') == graph.get_sorted_vertices(), 'After A -> B'
+        assert graph.get_sorted_vertices() == ('A', 'B'), 'After A -> B'
 
         graph.add_edge('A', 'C')
-        assert ('A', 'B', 'C') == graph.get_sorted_vertices(), 'After A -> C'
+        assert graph.get_sorted_vertices() == ('A', 'B', 'C'), 'After A -> C'
 
         graph.add_edge('B', 'C')
-        assert ('A', 'B', 'C') == graph.get_sorted_vertices(), 'After B -> C'
+        assert graph.get_sorted_vertices() == ('A', 'B', 'C'), 'After B -> C'
 
         graph.add_edge('B', 'E')
-        assert ('A', 'B', 'C', 'E') == graph.get_sorted_vertices(), 'After B -> E'
+        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'E'), 'After B -> E'
 
         graph.add_edge('C', 'D')
-        assert ('A', 'B', 'C', 'D', 'E') == graph.get_sorted_vertices(), 'After C -> D'
+        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'D', 'E'), 'After C -> D'
 
         graph.add_edge('D', 'F')
-        assert ('A', 'B', 'C', 'D', 'E', 'F') == graph.get_sorted_vertices(), 'After D -> F'
+        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'D', 'E', 'F'), 'After D -> F'
 
         graph.add_edge('F', 'E')
-        assert ('A', 'B', 'C', 'D', 'E', 'F') == graph.get_sorted_vertices(), 'After F -> E'
+        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'D', 'E', 'F'), 'After F -> E'
 
     def test_proper_in_degree_is_returned(self):
         graph = self._create_graph(GraphType.DIRECTED)
