@@ -111,6 +111,11 @@ class TestDistanceTable: # pylint: disable=R0201,C0116
         with raises(ValueError, match='No distance table entry found for the vertex Y.'):
             distance_table.get_predecessor('Y')
 
+    def test_attempt_to_backtrack_non_existent_path_leads_to_error(self):
+        distance_table = _DistanceTable('A')
+
+        with raises(ValueError, match='There is no path from A to X.'):
+            distance_table.backtrack_shortest_path('X')
 
 class TestTopologicalSort: # pylint: disable=R0201,C0116
     """Collection of test methods exercising the :method:

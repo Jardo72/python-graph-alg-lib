@@ -310,6 +310,10 @@ class _DistanceTable:
         Returns:
             ShortestPathSearchResult: The result of the backtracking.
         """
+        if destination not in self._entries:
+            message = f'There is no path from {self._starting_vertex} to {destination}.'
+            raise ValueError(message)
+
         path = deque()
         predecessor: str = self._entries[destination].predecessor
         destination_distance = self._entries[destination].distance_from_start
