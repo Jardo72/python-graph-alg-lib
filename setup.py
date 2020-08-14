@@ -23,7 +23,7 @@ with open("README.md", "r") as readme_file:
     long_description = readme_file.read()
 
 setup(
-    name="graphlib-Jardo72", # Replace with your own username
+    name="python-graph-alg-lib",
     version="0.1",
     author="Jaroslav Chmurny",
     author_email="jaroslav.chmurny@gmail.com",
@@ -34,7 +34,7 @@ setup(
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache License 2.0",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
