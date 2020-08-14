@@ -26,7 +26,7 @@ from pytest import raises
 
 from graphlib.graph import AbstractGraph, AdjacencyMatrixGraph, AdjacencySetGraph, Edge, GraphType
 
-# pylint: disable=R0201,C0116
+# pylint: disable=R0201,C0116,C0301
 
 
 class AbstractGraphTestFixture(ABC):
@@ -147,11 +147,7 @@ class AbstractGraphTestFixture(ABC):
         assert graph.get_in_degree('E') == 2
         assert graph.get_in_degree('F') == 1
 
-    def test_proper_edge_weight_is_returned(self):
-        # TODO:
-        # - for undirected graph, we should test both directions
-        # - for directed graph, the opposite direction should lead to error
-        # - if weight is not specified, 1 is used as default
+    def test_proper_edge_weights_are_returned_for_directed_graph(self):
         graph = self._create_graph(GraphType.DIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 3)
@@ -168,6 +164,44 @@ class AbstractGraphTestFixture(ABC):
         assert graph.get_edge_weight('C', 'D') == 7, 'C -> D'
         assert graph.get_edge_weight('D', 'F') == 3, 'D -> F'
         assert graph.get_edge_weight('F', 'E') == 5, 'F -> E'
+
+    def test_proper_edge_weights_for_both_directions_are_returned_for_undirected_graph(self):
+        graph = self._create_graph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B', 2)
+        graph.add_edge('A', 'C', 3)
+        graph.add_edge('B', 'C', 5)
+        graph.add_edge('B', 'E', 4)
+        graph.add_edge('C', 'D', 7)
+        graph.add_edge('D', 'F', 3)
+        graph.add_edge('F', 'E', 5)
+
+        assert graph.get_edge_weight('A', 'B') == graph.get_edge_weight('B', 'A') == 2, 'A <-> B'
+        assert graph.get_edge_weight('A', 'C') == graph.get_edge_weight('C', 'A') == 3, 'A <-> C'
+        assert graph.get_edge_weight('B', 'C') == graph.get_edge_weight('C', 'B') == 5, 'B <-> C'
+        assert graph.get_edge_weight('B', 'E') == graph.get_edge_weight('E', 'B') == 4, 'B <-> E'
+        assert graph.get_edge_weight('C', 'D') == graph.get_edge_weight('D', 'C') == 7, 'C <-> D'
+        assert graph.get_edge_weight('D', 'F') == graph.get_edge_weight('F', 'D') == 3, 'D <-> F'
+        assert graph.get_edge_weight('F', 'E') == graph.get_edge_weight('E', 'F') == 5, 'F <-> E'
+
+    def test_one_is_used_as_default_for_directed_graph_if_edge_weight_is_omitted(self):
+        graph = self._create_graph(GraphType.DIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
+
+        assert graph.get_edge_weight('A', 'B') == 1, 'A -> B'
+        assert graph.get_edge_weight('A', 'C') == 1, 'A -> C'
+        assert graph.get_edge_weight('B', 'C') == 1, 'B -> C'
+
+    def test_one_is_used_as_default_for_both_directions_for_undirected_graph_if_edge_weight_is_omitted(self):
+        graph = self._create_graph(GraphType.UNDIRECTED)
+        graph.add_edge('A', 'B')
+        graph.add_edge('A', 'C')
+        graph.add_edge('B', 'C')
+
+        assert graph.get_edge_weight('A', 'B') == graph.get_edge_weight('B', 'A') == 1, 'A <-> B'
+        assert graph.get_edge_weight('A', 'C') == graph.get_edge_weight('C', 'A') == 1, 'A <-> C'
+        assert graph.get_edge_weight('B', 'C') == graph.get_edge_weight('C', 'B') == 1, 'B <-> C'
 
     def test_proper_adjacent_vertices_are_returned_for_directed_graph(self):
         # be aware of the fact that this test case also covers vertices that are
