@@ -70,3 +70,6 @@
 
 #### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_disconnected_graph_01
 ![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Disconnected Graph Test Case #1](./TestMinimumSpanningTreeSearchKruskalDisconnectedOne.png)
+
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_disconnected_graph_02
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Disconnected Graph Test Case #2](./TestMinimumSpanningTreeSearchKruskalDisconnectedTwo.png)
