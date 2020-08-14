@@ -862,7 +862,7 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='C', destination='B', weight=4) in search_result
         assert Edge(start='J', destination='K', weight=2) in search_result
 
-    def test_kruskals_algorithm_01(self):
+    def test_kruskals_algorithm_connected_graph_01(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 2)
         graph.add_edge('A', 'C', 3)
@@ -888,7 +888,7 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='F', destination='G', weight=2) in search_result
         assert Edge(start='D', destination='G', weight=1) in search_result
 
-    def test_kruskals_algorithm_02(self):
+    def test_kruskals_algorithm_connected_graph_02(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 6)
         graph.add_edge('A', 'C', 5)
@@ -918,7 +918,7 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='G', destination='H', weight=3) in search_result
         assert Edge(start='A', destination='D', weight=4) in search_result
 
-    def test_kruskals_algorithm_03(self):
+    def test_kruskals_algorithm_connected_graph_03(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 3)
         graph.add_edge('B', 'C', 3)
@@ -960,7 +960,7 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='D', destination='G', weight=6) in search_result
         assert Edge(start='I', destination='L', weight=6) in search_result
 
-    def test_kruskals_algorithm_04(self):
+    def test_kruskals_algorithm_connected_graph_04(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)
         graph.add_edge('A', 'B', 4)
         graph.add_edge('B', 'C', 1)
@@ -1007,6 +1007,66 @@ class TestMinimumSpanningTreeSearch: # pylint: disable=R0201,C0116
         assert Edge(start='G', destination='I', weight=3) in search_result
         assert Edge(start='A', destination='F', weight=4) in search_result
         assert Edge(start='K', destination='L', weight=4) in search_result
+
+    def test_kruskals_algorithm_disconnected_graph_01(self):
+        graph = AdjacencySetGraph(GraphType.UNDIRECTED)
+
+        # left part
+        graph.add_edge('A', 'B', 3)
+        graph.add_edge('A', 'D', 2)
+        graph.add_edge('B', 'E', 3)
+        graph.add_edge('D', 'E', 6)
+        graph.add_edge('D', 'G', 4)
+        graph.add_edge('E', 'H', 3)
+        graph.add_edge('G', 'H', 5)
+        graph.add_edge('A', 'C', 1)
+        graph.add_edge('B', 'C', 2)
+        graph.add_edge('C', 'D', 4)
+        graph.add_edge('C', 'E', 4)
+        graph.add_edge('D', 'F', 4)
+        graph.add_edge('E', 'F', 1)
+        graph.add_edge('F', 'G', 3)
+        graph.add_edge('F', 'H', 2)
+
+        # right part
+        graph.add_edge('I', 'J', 3)
+        graph.add_edge('I', 'L', 4)
+        graph.add_edge('J', 'M', 4)
+        graph.add_edge('L', 'M', 2)
+        graph.add_edge('L', 'O', 6)
+        graph.add_edge('M', 'P', 3)
+        graph.add_edge('O', 'P', 5)
+        graph.add_edge('I', 'K', 4)
+        graph.add_edge('J', 'K', 1)
+        graph.add_edge('K', 'L', 4)
+        graph.add_edge('K', 'M', 3)
+        graph.add_edge('L', 'N', 1)
+        graph.add_edge('M', 'N', 3)
+        graph.add_edge('N', 'O', 6)
+        graph.add_edge('N', 'P', 4)
+
+        search_request = MinimumSpanningTreeSearchRequest(graph, MinimumSpanningTreeAlgorithm.KRUSKAL)
+        search_result = find_minimum_spanning_tree(search_request)
+
+        assert len(search_result) == 14
+
+        # left part
+        assert Edge(start='A', destination='C', weight=1) in search_result
+        assert Edge(start='E', destination='F', weight=1) in search_result
+        assert Edge(start='A', destination='D', weight=2) in search_result
+        assert Edge(start='B', destination='C', weight=2) in search_result
+        assert Edge(start='F', destination='H', weight=2) in search_result
+        assert Edge(start='B', destination='E', weight=3) in search_result
+        assert Edge(start='F', destination='G', weight=3) in search_result
+
+        # right part
+        assert Edge(start='J', destination='K', weight=1) in search_result
+        assert Edge(start='L', destination='N', weight=1) in search_result
+        assert Edge(start='L', destination='M', weight=2) in search_result
+        assert Edge(start='I', destination='J', weight=3) in search_result
+        assert Edge(start='K', destination='M', weight=3) in search_result
+        assert Edge(start='M', destination='P', weight=3) in search_result
+        assert Edge(start='O', destination='P', weight=5) in search_result
 
     def test_request_for_prims_algorithm_without_start_vertex_leads_to_error(self):
         graph = AdjacencySetGraph(GraphType.UNDIRECTED)

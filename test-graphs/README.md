@@ -56,14 +56,17 @@
 
 ### Kruskal's Algorithm
 
-#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_01
-![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #1](./TestMinimumSpanningTreeSearchKruskalOne.png)
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_connected_graph_01
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Connected Graph Test Case #1](./TestMinimumSpanningTreeSearchKruskalConnectedOne.png)
 
-#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_02
-![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #2](./TestMinimumSpanningTreeSearchKruskalTwo.png)
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_connected_graph_02
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Connected Graph Test Case #2](./TestMinimumSpanningTreeSearchKruskalConnectedTwo.png)
 
-#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_03
-![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #3](./TestMinimumSpanningTreeSearchKruskalThree.png)
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_connected_graph_03
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Connected Graph Test Case #3](./TestMinimumSpanningTreeSearchKruskalConnectedThree.png)
 
-#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_04
-![TestMinimumSpanningTreeSearch - Kruskal's Algorithm Test Case #4](./TestMinimumSpanningTreeSearchKruskalFour.png)
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_connected_graph_04
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Connected Graph Test Case #4](./TestMinimumSpanningTreeSearchKruskalConnectedFour.png)
+
+#### TestMinimumSpanningTreeSearch.test_kruskals_algorithm_disconnected_graph_01
+![TestMinimumSpanningTreeSearch - Kruskal's Algorithm/Disconnected Graph Test Case #1](./TestMinimumSpanningTreeSearchKruskalDisconnectedOne.png)
