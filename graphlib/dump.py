@@ -40,10 +40,10 @@ def dump_graph(graph: AbstractGraph, output):
     output.write(f'Graph type: {graph.graph_type}\n')
     output.write(f'Weighted: {weighted}\n')
     output.write(f'Vertices (totally {graph.vertex_count}):\n')
-    for current_vertex in graph.get_sorted_vertices():
+    for current_vertex in graph.get_all_vertices(sort=True):
         output.write(f' - {current_vertex}\n')
     output.write('Edges:\n')
-    for current_vertex in graph.get_sorted_vertices():
+    for current_vertex in graph.get_all_vertices(sort=True):
         for adjacent_vertex in graph.get_adjacent_vertices(current_vertex):
             weight = graph.get_edge_weight(current_vertex, adjacent_vertex)
             output.write(f' - {current_vertex} -> {adjacent_vertex} (weight = {weight})\n')

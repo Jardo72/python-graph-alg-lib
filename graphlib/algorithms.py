@@ -47,7 +47,7 @@ def sort_topologically(graph: AbstractGraph) -> Sequence[str]:
     queue: deque = deque()
     in_degree_map: Dict[str, int] = {}
 
-    for vertex in graph.get_sorted_vertices():
+    for vertex in graph.get_all_vertices():
         in_degree_map[vertex] = graph.get_in_degree(vertex)
         if in_degree_map[vertex] == 0:
             queue.append(vertex)

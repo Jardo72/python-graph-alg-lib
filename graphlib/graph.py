@@ -111,9 +111,9 @@ class _VertexRegistry:
             raise ValueError(message)
         return self._id_to_name_mapping[vertex_id]
 
-    def get_sorted_names(self) -> Tuple[str, ...]:
-        """Creates and returns a new tuple containing sorted names of all
-        vetices contained in this vertex registry.
+    def get_names(self) -> Tuple[str, ...]:
+        """Creates and returns a new tuple containing names of all vertices
+        contained in this vertex registry.
 
         Returns:
             Tuple[str, ...]: The cretated tuple with sorted names (ascending
@@ -121,7 +121,7 @@ class _VertexRegistry:
                              registry. An empty tuple is returned if this
                              vertex registry is empty.
         """
-        return tuple(sorted(self._name_to_id_mapping))
+        return tuple(self._name_to_id_mapping)
 
     def _generate_new_id(self) -> int:
         """Internal helper method that generates and returns a new unique
@@ -200,9 +200,15 @@ class AbstractGraph(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_sorted_vertices(self) -> Tuple[str, ...]:
-        """Creates and returns a new tuple containing sorted names of all
+    def get_all_vertices(self, sort: bool = False) -> Tuple[str, ...]:
+        """Creates and returns a new tuple containing names of all
         vertices involved in the graph represented by this object.
+
+        If requested, the names are alphabetically sorted in ascending order.
+
+        Args:
+            sort (bool): True if the names of the vertices are to be sorted;
+                         False otherwise.
 
         Raises:
             NotImplementedError: This method always raises this exception as
@@ -274,7 +280,7 @@ class AbstractGraph(ABC):
                               represented by this object.
         """
         result = set()
-        for vertex in self.get_sorted_vertices():
+        for vertex in self.get_all_vertices():
             for edge in self.get_outgoing_edges(vertex):
                 result.add(edge)
         return tuple(result)
@@ -410,16 +416,17 @@ class AdjacencyMatrixGraph(AbstractGraph):
             self._matrix[vertex_two_index][vertex_one_index] = weight
         self._weights.add(weight)
 
-    def get_sorted_vertices(self) -> Tuple[str, ...]:
-        """Creates and returns a new tuple containing sorted names of all
+    def get_all_vertices(self, sort: bool = False) -> Tuple[str, ...]:
+        """Creates and returns a new tuple containing names of all
         vertices involved in the graph represented by this object.
 
         Returns:
             Tuple[str, ...]: New tuple containing the names of all vertices
-                             involved in the graph represented by this object
-                             in ascending alphabetical order.
+                             involved in the graph represented by this object.
+                             If requested, the names are sorted in ascending
+                             alphabetical order.
         """
-        return self._registry.get_sorted_names()
+        return tuple(sorted(self._registry.get_names()) if sort else self._registry.get_names())
 
     def get_adjacent_vertices(self, vertex: str) -> Tuple[str, ...]:
         """Creates and returns a new tuple containing the names of vertices
@@ -623,16 +630,17 @@ class AdjacencySetGraph(AbstractGraph):
             self._adjacency_sets[vertex_two] = _AdjacencySet(vertex_two)
         self._adjacency_sets[vertex_one].add_edge(vertex_two, weight)
 
-    def get_sorted_vertices(self) -> Tuple[str, ...]:
-        """Creates and returns a new tuple containing sorted names of all
+    def get_all_vertices(self, sort: bool = False) -> Tuple[str, ...]:
+        """Creates and returns a new tuple containing names of all
         vertices involved in the graph represented by this object.
 
         Returns:
             Tuple[str, ...]: New tuple containing the names of all vertices
-                             involved in the graph represented by this object
-                             in ascending alphabetical order.
+                             involved in the graph represented by this object.
+                             If requested, the names are sorted in ascending
+                             alphabetical order.
         """
-        return tuple(sorted(self._adjacency_sets))
+        return tuple(sorted(self._adjacency_sets) if sort else self._adjacency_sets)
 
     def get_adjacent_vertices(self, vertex: str) -> Tuple[str, ...]:
         """Creates and returns a new tuple containing the names of vertices

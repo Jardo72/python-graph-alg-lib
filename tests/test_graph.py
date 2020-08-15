@@ -80,7 +80,7 @@ class AbstractGraphTestFixture(ABC):
     def test_empty_graph_has_no_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
         assert graph.vertex_count == 0, 'Vertex count'
-        assert graph.get_sorted_vertices() == (), 'Sorted vertices'
+        assert graph.get_all_vertices() == (), 'Vertices'
 
     def test_non_empty_graph_returns_proper_number_of_vertices(self):
         graph = self._create_graph(GraphType.DIRECTED)
@@ -110,25 +110,25 @@ class AbstractGraphTestFixture(ABC):
         graph = self._create_graph(GraphType.DIRECTED)
 
         graph.add_edge('A', 'B')
-        assert graph.get_sorted_vertices() == ('A', 'B'), 'After A -> B'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B'), 'After A -> B'
 
         graph.add_edge('A', 'C')
-        assert graph.get_sorted_vertices() == ('A', 'B', 'C'), 'After A -> C'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B', 'C'), 'After A -> C'
 
         graph.add_edge('B', 'C')
-        assert graph.get_sorted_vertices() == ('A', 'B', 'C'), 'After B -> C'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B', 'C'), 'After B -> C'
 
         graph.add_edge('B', 'E')
-        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'E'), 'After B -> E'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B', 'C', 'E'), 'After B -> E'
 
         graph.add_edge('C', 'D')
-        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'D', 'E'), 'After C -> D'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B', 'C', 'D', 'E'), 'After C -> D'
 
         graph.add_edge('D', 'F')
-        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'D', 'E', 'F'), 'After D -> F'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B', 'C', 'D', 'E', 'F'), 'After D -> F'
 
         graph.add_edge('F', 'E')
-        assert graph.get_sorted_vertices() == ('A', 'B', 'C', 'D', 'E', 'F'), 'After F -> E'
+        assert graph.get_all_vertices(sort=True) == ('A', 'B', 'C', 'D', 'E', 'F'), 'After F -> E'
 
     def test_proper_in_degree_is_returned(self):
         graph = self._create_graph(GraphType.DIRECTED)
