@@ -12,7 +12,7 @@ Library of Graph Algorithms for Python is a simple Python library providing impl
 ## Runtime Environment, Source Code Organization etc.
 
 ### Python Version and Dependencies
-When implementing the library, I used Python 3.8. Slightly older versions of Python might work as well, but there is no guarantee. The library code uses only the Python Standard Library. In other words it does not depend on any other modules. Unit tests depend on [PyTest 5.4.3](https://docs.pytest.org/). If you want to measure the code coverage, you will also need [PyTest Coverage 2.10.0](https://pypi.org/project/pytest-cov) (i.e. optional test dependency). Similarly, if you want to generate test reports in HTML format, [PyTest HTML plugin](https://pypi.org/project/pytest-html) is needed.
+When implementing the library, I used Python 3.8. Slightly older versions of Python might work as well, but there is no guarantee as I have never tested the library with them. The library code uses only the Python Standard Library. In other words, it does not depend on any other modules. Unit tests depend on [PyTest 5.4.3](https://docs.pytest.org/). If you want to measure the code coverage, you will also need [PyTest Coverage 2.10.0](https://pypi.org/project/pytest-cov) (i.e. optional test dependency). Similarly, if you want to generate test reports in HTML format, [PyTest HTML plugin](https://pypi.org/project/pytest-html) is needed.
 
 <a name="library-code"></a>
 ### Library Code
@@ -21,7 +21,7 @@ The library code is divided to five modules:
 an abstract base class prescribing the public API of any graph implementation.
 - [graphlib.algorithms](./graphlib/algorithms.py) provides implementations of various graph algorithms like topological sort, shortest path search, minimum spanning tree search etc.
 - [graphlib.util](./graphlib/util.py) module provides functionalities that support the implementation of the algorithms, for instance a priority queue.
-- [graphlib.dump](./graphlib/dump.py) module provides dump-functions that can pretty-print various structures like graph, result of shortest path search, minimum spanning tree etc. These functions can write their output to a file, to stdout, or to an instance of io.StringIO.
+- [graphlib.dump](./graphlib/dump.py) module provides dump-functions that can pretty-print various structures like graph, result of shortest path search, result of minimum spanning tree search etc. These functions can write their output to a file, to stdout, or to an instance of io.StringIO.
 - [graphlib.jsondef](./graphlib/jsondef.py) module provides functions that can build a graph accorging to a JSON definition.
 
 

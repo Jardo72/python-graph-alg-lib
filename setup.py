@@ -24,7 +24,7 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="python-graph-alg-lib",
-    version="0.1",
+    version="1.0.0",
     author="Jaroslav Chmurny",
     author_email="jaroslav.chmurny@gmail.com",
     description="Library of Graph Algorithms for Python",
